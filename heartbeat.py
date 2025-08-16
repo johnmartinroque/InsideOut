@@ -1,27 +1,57 @@
-from heartrate_monitor import HeartRateMonitor
-import time
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report, accuracy_score
 
-# Print a message indicating the sensor is starting
-print('sensor starting...')
+# Load the dataset
+df = pd.read_csv("heart_rate_emotion_dataset.csv")  # Change to your CSV file name
 
-# Set the duration for which the sensor data will be read (in seconds)
-duration = 30
+# Display the first few rows
+print("First few rows of the dataset:")
+print(df.head())
 
-# Initialize the HeartRateMonitor object
-# Set print_raw to False to avoid printing raw data
-# Set print_result to True to print the calculated results
-hrm = HeartRateMonitor(print_raw=False, print_result=True)
+# Display data info
+print("\nDataset Info:")
+print(df.info())
 
-# Start the heart rate sensor
-hrm.start_sensor()
+# Handle missing values (if any)
+df = df.dropna()
 
-try:
-    time.sleep(duration)
-except KeyboardInterrupt:
-    print('keyboard interrupt detected, exiting...')
+# Check column names
+print("\nColumn names:")
+print(df.columns)
 
-# Stop the sensor after the duration has elapsed
-hrm.stop_sensor()
+# Assume the dataset has 'Heart_Rate' and 'Emotion' columns
+# Encode the target variable (Emotion)
+le = LabelEncoder()
+df['Emotion_Label'] = le.fit_transform(df['Emotion'])
 
-# Print a message indicating the sensor has stopped
-print('sensor stopped!')
+# Features and target
+X = df[['HeartRate']]  # You can include more features if available
+y = df['Emotion_Label']
+
+# Split into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Initialize and train the model
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=le.classes_))
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+# Example: Predict a new heart rate
+new_heart_rate = [[90]]
+predicted_label = model.predict(new_heart_rate)
+predicted_emotion = le.inverse_transform(predicted_label)
+
+print(f"\nPredicted Emotion for Heart Rate 85: {predicted_emotion[0]}")

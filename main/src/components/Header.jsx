@@ -17,6 +17,9 @@ function Header() {
             <Nav.Link as={Link} to="/login">
               Login
             </Nav.Link>
+            <Nav.Link as={Link} to="/camera">
+              Camera
+            </Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">

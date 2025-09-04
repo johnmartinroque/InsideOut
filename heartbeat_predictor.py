@@ -14,5 +14,5 @@ def predict_emotion(heart_rate):
 
 if __name__ == "__main__":
     # Example usage
-    test_heart_rate = 80
+    test_heart_rate = 89
     print(f"Predicted Emotion for Heart Rate {test_heart_rate}: {predict_emotion(test_heart_rate)}")

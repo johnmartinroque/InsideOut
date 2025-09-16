@@ -3,14 +3,16 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const auth = getAuth();
+  const navigate = useNavigate();
   const handleSignout = async () => {
     await signOut(auth);
     localStorage.removeItem("user");
     console.log("User signed out successfully.");
+    navigate("/");
     try {
     } catch (err) {
       console.error("Error signing out: ", err);

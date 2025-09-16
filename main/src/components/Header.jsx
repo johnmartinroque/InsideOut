@@ -12,7 +12,7 @@ function Header() {
     await signOut(auth);
     localStorage.removeItem("user");
     console.log("User signed out successfully.");
-    navigate("/");
+    navigate("/landingpage");
     try {
     } catch (err) {
       console.error("Error signing out: ", err);

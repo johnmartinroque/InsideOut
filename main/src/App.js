@@ -7,6 +7,8 @@ import Header from "./components/Header";
 import Login from "./screens/Login";
 import VideoFeed from "./screens/VideoFeed";
 import Profile from "./screens/Profile";
+import LandingPage from "./screens/LandingPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -14,11 +16,44 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/data" element={<Data />} />
+          {/* Public Routes */}
+          <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/camera" element={<VideoFeed />} />
-          <Route path="/profile" element={<Profile />} />
+
+          {/* Protected Routes  */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/data"
+            element={
+              <ProtectedRoute>
+                <Data />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/camera"
+            element={
+              <ProtectedRoute>
+                <VideoFeed />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </div>

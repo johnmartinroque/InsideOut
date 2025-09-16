@@ -9,12 +9,46 @@ import VideoFeed from "./screens/VideoFeed";
 import Profile from "./screens/Profile";
 import LandingPage from "./screens/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useEffect, useState } from "react";
+import HeaderGuest from "./components/HeaderGuest";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Listen to Firebase auth state
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // Save token if needed
+        firebaseUser.getIdToken().then((token) => {
+          const userData = {
+            email: firebaseUser.email,
+            token,
+          };
+          localStorage.setItem("user", JSON.stringify(userData));
+          setUser(userData);
+        });
+      } else {
+        localStorage.removeItem("user");
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>; // optional spinner while checking auth
+  }
+
   return (
     <div>
       <Router>
-        <Header />
+        {user ? <Header /> : <HeaderGuest />}
         <Routes>
           {/* Public Routes */}
           <Route path="/landingpage" element={<LandingPage />} />

@@ -28,9 +28,6 @@ function Header() {
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/login">
-              Login
-            </Nav.Link>
             <Nav.Link as={Link} to="/camera">
               Camera
             </Nav.Link>

@@ -2,17 +2,21 @@ import { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase"; // adjust path if needed
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const login = async (e) => {
-    e.preventDefault(); // prevent page refresh
+    e.preventDefault();
     setError("");
     setLoading(true);
 
@@ -38,8 +42,23 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(userData));
 
       console.log("Logged in user:", userData);
+      navigate("/");
     } catch (err) {
-      setError(err.message);
+      console.error("Login error:", err.code, err.message);
+
+      if (err.code === "auth/invalid-email") {
+        setError("Invalid email format. Please enter a valid email.");
+      } else if (err.code === "auth/user-not-found") {
+        setError("No account found with this email.");
+      } else if (err.code === "auth/wrong-password") {
+        setError("Incorrect password. Please try again.");
+      } else if (err.code === "auth/invalid-credential") {
+        setError("Invalid email or password.");
+      } else if (err.code === "auth/too-many-requests") {
+        setError("Too many attempts. Please try again later.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -80,12 +99,16 @@ function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Form.Group>
-
-              {error && <p className="text-danger">{error}</p>}
-
               <Button variant="primary" type="submit" disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
               </Button>
+              <Alert key="danger" variant="danger">
+                {error}
+                {/* 
+                <Alert.Link href="#">an example link</Alert.Link>. Give it a
+                click if you like.
+               */}
+              </Alert>
             </Form>
           </Col>
         </Row>

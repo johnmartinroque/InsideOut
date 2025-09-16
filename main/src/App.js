@@ -6,6 +6,7 @@ import Data from "./screens/Data";
 import Header from "./components/Header";
 import Login from "./screens/Login";
 import VideoFeed from "./screens/VideoFeed";
+import Profile from "./screens/Profile";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/data" element={<Data />} />
           <Route path="/login" element={<Login />} />
           <Route path="/camera" element={<VideoFeed />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
     </div>

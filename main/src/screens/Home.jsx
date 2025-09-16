@@ -1,7 +1,7 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import RealTime from "../components/RealTime";
-import AddCompanion from "../components/AddCompanion";
+
 import ESP32Status from "../components/ESP32Status";
 
 function Home() {
@@ -12,7 +12,7 @@ function Home() {
           <Col className="text-center">
             <h1>Inside Out</h1>
             <RealTime />
-            <AddCompanion />
+
             <ESP32Status />
           </Col>
         </Row>

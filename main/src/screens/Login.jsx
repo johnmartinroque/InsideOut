@@ -11,7 +11,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -42,7 +42,11 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(userData));
 
       console.log("Logged in user:", userData);
-      navigate("/");
+      setSuccess("Successful login");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
     } catch (err) {
       console.error("Login error:", err.code, err.message);
 
@@ -102,13 +106,18 @@ function Login() {
               <Button variant="primary" type="submit" disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
               </Button>
-              <Alert key="danger" variant="danger">
-                {error}
-                {/* 
-                <Alert.Link href="#">an example link</Alert.Link>. Give it a
-                click if you like.
-               */}
-              </Alert>
+              {/* Error Message */}
+              {error && (
+                <Alert key="danger" variant="danger">
+                  {error}
+                </Alert>
+              )}
+              {/* Success Message */}
+              {success && (
+                <Alert key="success" variant="success">
+                  {success}
+                </Alert>
+              )}
             </Form>
           </Col>
         </Row>

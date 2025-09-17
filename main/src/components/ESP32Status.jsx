@@ -1,34 +1,36 @@
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000"); // adjust if backend is on another IP
 
 function ESP32Status() {
-  const [status, setStatus] = useState("Checking...");
-  const esp32IP = "http://192.168.100.169/";
-
-  const checkESP32 = async () => {
-    try {
-      const response = await fetch(esp32IP, { method: "GET" });
-      if (response.ok) {
-        const text = await response.text();
-        setStatus("✅ ESP32 Online: " + text);
-      } else {
-        setStatus("⚠️ ESP32 Responded but not OK");
-      }
-    } catch (error) {
-      setStatus("❌ ESP32 Offline");
-    }
-  };
+  const [status, setStatus] = useState("unknown");
 
   useEffect(() => {
-    checkESP32(); // run once on mount
+    // Listen for ESP32 status updates
+    socket.on("esp32-status", (newStatus) => {
+      setStatus(newStatus);
+    });
 
-    const interval = setInterval(checkESP32, 5000); // check every 5 seconds
-    return () => clearInterval(interval); // cleanup on unmount
+    // Cleanup when component unmounts
+    return () => {
+      socket.off("esp32-status");
+    };
   }, []);
 
   return (
     <div>
-      <h2>ESP32 Status</h2>
-      <p>{status}</p>
+      <h2>
+        ESP32 Status:{" "}
+        <span
+          style={{
+            color: status === "connected" ? "green" : "red",
+            fontWeight: "bold",
+          }}
+        >
+          {status}
+        </span>
+      </h2>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { getAuth, signOut } from "firebase/auth";
+import { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -7,6 +8,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const auth = getAuth();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const email = user?.email;
   const navigate = useNavigate();
   const handleSignout = async () => {
     await signOut(auth);
@@ -18,6 +22,10 @@ function Header() {
       console.error("Error signing out: ", err);
     }
   };
+
+  useEffect(() => {
+    console.log(email);
+  });
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>

@@ -1,13 +1,15 @@
 import { getAuth, signOut } from "firebase/auth";
+import { useState } from "react";
 import { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 function Header() {
   const auth = getAuth();
+  const [userEmail, setUserEmail] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
   const email = user?.email;
@@ -24,7 +26,7 @@ function Header() {
   };
 
   useEffect(() => {
-    console.log(email);
+    setUserEmail(email);
   });
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -42,7 +44,7 @@ function Header() {
             <Nav.Link as={Link} to="/profile">
               Profile
             </Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+            <NavDropdown title={userEmail} id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
                 Another action

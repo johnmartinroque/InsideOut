@@ -3,6 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import RealTime from "../components/RealTime";
 
 import ESP32Status from "../components/ESP32Status";
+import Camera from "../components/Camera";
 
 function Home() {
   return (
@@ -14,6 +15,7 @@ function Home() {
             <RealTime />
 
             <ESP32Status />
+            <Camera />
           </Col>
         </Row>
       </Container>

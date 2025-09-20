@@ -5,6 +5,8 @@ import RealTime from "../components/RealTime";
 import ESP32Status from "../components/ESP32Status";
 import Camera from "../components/Camera";
 
+//      <RealTime />    <ESP32Status />
+
 function Home() {
   return (
     <div>
@@ -12,9 +14,7 @@ function Home() {
         <Row className="h-100 d-flex  ">
           <Col className="text-center">
             <h1>Inside Out</h1>
-            <RealTime />
 
-            <ESP32Status />
             <Camera />
           </Col>
         </Row>

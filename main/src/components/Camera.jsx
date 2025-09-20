@@ -4,6 +4,7 @@ function Camera() {
   const videoRef = useRef(null);
   const [stream, setStream] = useState(null);
   const [cameraOn, setCameraOn] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleToggleCamera = async () => {
     if (!cameraOn) {
@@ -18,7 +19,7 @@ function Camera() {
         setCameraOn(true);
       } catch (err) {
         console.error("Error accessing camera:", err);
-        alert("Unable to access camera");
+        setError("Camare feed is not available");
       }
     } else {
       // Turn off camera
@@ -44,6 +45,7 @@ function Camera() {
         playsInline
         className="w-64 h-48 rounded-lg border border-gray-300"
       />
+      {error}
     </div>
   );
 }

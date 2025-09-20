@@ -8,16 +8,25 @@ function AddCompanion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const auth = getAuth();
 
   const handleRegisterUser = async () => {
     try {
+      setLoading(true);
       const user = await createUserWithEmailAndPassword(auth, email, password);
     } catch (err) {
+      setLoading(false);
       console.error(err.code);
       console.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <h1>Loading....</h1>;
+  }
 
   return (
     <Container>

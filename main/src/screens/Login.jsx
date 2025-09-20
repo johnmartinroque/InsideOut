@@ -6,6 +6,7 @@ import Alert from "react-bootstrap/Alert";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase"; // adjust path if needed
 import { useNavigate } from "react-router-dom";
+import Spinner from "react-bootstrap/Spinner";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -67,6 +68,14 @@ function Login() {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    );
+  }
 
   return (
     <div>

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import HeaderGuest from "./components/HeaderGuest";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
+import Register from "./screens/Register";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -53,6 +54,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Protected Routes  */}
           <Route

@@ -1,4 +1,5 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { set } from "firebase/database";
 import { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
@@ -18,6 +19,11 @@ function AddCompanion() {
     } catch (err) {
       setLoading(false);
       console.error(err.code);
+      if (err.code == "auth/weak-password") {
+        setError("Use a stronger password");
+      } else {
+        setError("error something");
+      }
       console.error(err.message);
     } finally {
       setLoading(false);
@@ -70,6 +76,7 @@ function AddCompanion() {
             >
               Submit
             </Button>
+            {error}
           </Form>
         </Col>
       </Row>

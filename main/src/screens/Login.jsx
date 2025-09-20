@@ -79,11 +79,13 @@ function Login() {
             <Form
               onSubmit={login}
               style={{
-                backgroundColor: "#afafafff",
-                padding: "1rem",
+                backgroundColor: "#f8f9fa",
+                padding: "20px",
                 borderRadius: "8px",
+                maxWidth: "50rem",
               }}
             >
+              <h1>Login</h1>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control

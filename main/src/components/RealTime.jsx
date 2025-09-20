@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+{
+  /* 
+  
+  import React, { useEffect, useState } from "react";
 import {
   collection,
   query,
@@ -67,3 +70,6 @@ function RealTime() {
 }
 
 export default RealTime;
+
+  */
+}

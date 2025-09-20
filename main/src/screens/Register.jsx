@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 
 function AddCompanion() {
   const [email, setEmail] = useState("");
@@ -31,7 +32,11 @@ function AddCompanion() {
   };
 
   if (loading) {
-    return <h1>Loading....</h1>;
+    return (
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    );
   }
 
   return (

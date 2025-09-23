@@ -1,7 +1,4 @@
-{
-  /*  
-  
-  const express = require("express");
+const express = require("express");
 const cors = require("cors");
 
 const app = express();
@@ -25,9 +22,6 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-  
-  */
-}
 {
   /* 
   
@@ -96,7 +90,11 @@ app.listen(PORT, () => {
   */
 }
 
-const express = require("express");
+// ESP 32
+{
+  /*
+  
+  const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -144,3 +142,7 @@ io.on("connection", (socket) => {
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+  
+  */
+}

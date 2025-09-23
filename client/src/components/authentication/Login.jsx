@@ -1,6 +1,6 @@
 import React from "react";
 
-function Login() {
+function Login({ handleShowLoginForm }) {
   return (
     <div className="bg-amber-100 flex justify-center">
       <form className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
@@ -63,7 +63,10 @@ function Login() {
         </button>
         <p className="text-gray-500 text-sm mt-3 mb-11">
           Don’t have an account?{" "}
-          <a className="text-indigo-500" href="#">
+          <a
+            className="text-indigo-500 cursor-pointer"
+            onClick={handleShowLoginForm}
+          >
             Sign up
           </a>
         </p>

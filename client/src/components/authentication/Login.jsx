@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
 function Login({ handleShowLoginForm }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {};
   return (
     <div className="bg-amber-100 flex justify-center">
       <form className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
@@ -26,6 +30,8 @@ function Login({ handleShowLoginForm }) {
             placeholder="Email id"
             className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -47,6 +53,8 @@ function Login({ handleShowLoginForm }) {
             placeholder="Password"
             className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="mt-5 text-left text-indigo-500">
@@ -58,6 +66,7 @@ function Login({ handleShowLoginForm }) {
         <button
           type="submit"
           className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
+          onClick={handleLogin}
         >
           Login
         </button>

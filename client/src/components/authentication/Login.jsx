@@ -1,10 +1,24 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
+import { auth } from "../../firebase";
 
 function Login({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {};
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div className="bg-amber-100 flex justify-center">
       <form className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">

@@ -1,16 +1,7 @@
-import { getAuth, signOut } from "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
-import { auth } from "../firebase";
 
-function Header() {
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+function HeaderGuest() {
   return (
     <div>
       <header>
@@ -92,12 +83,12 @@ function Header() {
                   </a>
                 </li>
                 <li>
-                  <a
-                    onClick={handleLogout}
+                  <Link
+                    to="/authentication"
                     class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                   >
-                    Logout
-                  </a>
+                    Log in
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -108,4 +99,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default HeaderGuest;

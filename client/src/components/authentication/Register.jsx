@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
+import { auth } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function Register({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = async () => {};
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div>
       {" "}
@@ -70,7 +84,7 @@ function Register({ handleShowLoginForm }) {
             className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
             onClick={handleRegister}
           >
-            Login
+            Register
           </button>
           <p className="text-gray-500 text-sm mt-3 mb-11">
             Already have an account?{" "}

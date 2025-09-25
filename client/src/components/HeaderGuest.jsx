@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function HeaderGuest() {
+  const [currentNav, setCurrentNav] = useState("/");
+
+  // current nav styles
+  const linkClass = (path) =>
+    currentNav === path
+      ? "block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
+      : "block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 lg:dark:hover:bg-transparent dark:border-gray-700";
   return (
     <div>
       <header>
@@ -60,32 +67,35 @@ function HeaderGuest() {
                 <li>
                   <Link
                     to="/"
-                    class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
-                    aria-current="page"
+                    onClick={() => setCurrentNav("/")}
+                    className={linkClass("/")}
                   >
                     Home
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                  <Link
+                    to="/about"
+                    onClick={() => setCurrentNav("/about")}
+                    className={linkClass("/about")}
                   >
-                    Team
-                  </a>
+                    About
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                  <Link
+                    to="/contact"
+                    onClick={() => setCurrentNav("/contact")}
+                    className={linkClass("/contact")}
                   >
                     Contact
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <Link
                     to="/authentication"
-                    class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                    onClick={() => setCurrentNav("/authentication")}
+                    className={linkClass("/authentication")}
                   >
                     Log in
                   </Link>

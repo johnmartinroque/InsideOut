@@ -15,6 +15,9 @@ function Register({ handleShowLoginForm }) {
         password
       );
       localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
+      setEmail("");
+      setPassword("");
+      navigate("/");
     } catch (err) {
       console.error(err);
     }

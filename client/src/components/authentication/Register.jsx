@@ -5,9 +5,10 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 function Register({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -20,8 +21,12 @@ function Register({ handleShowLoginForm }) {
       navigate("/");
     } catch (err) {
       console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div>
       {" "}
@@ -81,11 +86,12 @@ function Register({ handleShowLoginForm }) {
               Forgot password?
             </a>
           </div>
-
+          {loading ? <>loading..</> : <></>}
           <button
             type="submit"
             className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
             onClick={handleRegister}
+            disabled={loading}
           >
             Register
           </button>

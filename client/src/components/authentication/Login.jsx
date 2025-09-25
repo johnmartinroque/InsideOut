@@ -6,10 +6,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 function Login({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -22,6 +25,9 @@ function Login({ handleShowLoginForm }) {
       navigate("/");
     } catch (err) {
       console.error(err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -81,11 +87,13 @@ function Login({ handleShowLoginForm }) {
             Forgot password?
           </a>
         </div>
+        {loading ? <>Loading....</> : <></>}
 
         <button
           type="submit"
-          className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
+          className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity cursor-pointer"
           onClick={handleLogin}
+          disabled={loading}
         >
           Login
         </button>

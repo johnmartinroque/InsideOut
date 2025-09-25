@@ -5,6 +5,7 @@ import { auth } from "../firebase";
 
 function Header() {
   const [user, setUser] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -103,13 +104,78 @@ function Header() {
                     Contact
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                <li className="relative">
+                  <button
+                    onClick={() => setIsOpen((prev) => !prev)}
+                    className="flex items-center py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 
+                   hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 
+                   dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 
+                   dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     {user ? user.email : "Guest"}
-                  </a>
+                    <svg
+                      className="w-4 h-4 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {isOpen && (
+                    <ul
+                      className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg 
+                     dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      {user ? (
+                        <>
+                          <li>
+                            <Link
+                              to="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                            >
+                              Profile
+                            </Link>
+                          </li>
+                          <li>
+                            <button
+                              onClick={handleLogout}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                            >
+                              Logout
+                            </button>
+                          </li>
+                        </>
+                      ) : (
+                        <>
+                          <li>
+                            <Link
+                              to="/login"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                            >
+                              Login
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/register"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                            >
+                              Register
+                            </Link>
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                  )}
                 </li>
                 <li>
                   <a

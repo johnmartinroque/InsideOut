@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Authentication from "./screens/Authentication";
 import HeaderGuest from "./components/HeaderGuest";
 import { auth } from "./firebase";
+import LandingPage from "./screens/LandingPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -23,7 +24,7 @@ function App() {
       <Router>
         {user ? <Header /> : <HeaderGuest />}
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={user ? <Home /> : <LandingPage />} />
           <Route path="/authentication" element={<Authentication />} />
         </Routes>
       </Router>

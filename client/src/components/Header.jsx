@@ -7,6 +7,7 @@ function Header() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      localStorage.removeItem("userInfo");
     } catch (err) {
       console.error(err);
     }

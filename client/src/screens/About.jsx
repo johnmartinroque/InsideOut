@@ -2,7 +2,7 @@ import React from "react";
 
 function About() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 text-center px-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-center px-6">
       {/* Main Section */}
       <div className="max-w-3xl">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">

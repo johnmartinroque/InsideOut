@@ -4,12 +4,12 @@ import Footer from "../components/Footer";
 
 function LandingPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 text-center px-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-center px-6">
       {/* Hero Section */}
-      <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+      <h1 className="text-5xl md:text-6xl font-bold text-gray-800 dark:text-white mb-6">
         InsideOut
       </h1>
-      <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mb-8">
+      <p className="text-lg md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mb-8">
         An AI-powered system designed to monitor emotions of elderly individuals
         and provide calming responses, such as music, to improve their
         well-being.
@@ -36,7 +36,7 @@ function LandingPage() {
         </div>
         <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow">
           <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
-            Personalized Music
+            Relaxing Music
           </h3>
           <p className="text-gray-600 dark:text-gray-300">
             AI selects calming music based on the detected emotions to enhance

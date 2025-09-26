@@ -7,25 +7,54 @@ import Authentication from "./screens/Authentication";
 import HeaderGuest from "./components/HeaderGuest";
 import { auth } from "./firebase";
 import LandingPage from "./screens/LandingPage";
+import Contact from "./screens/Contact";
+import About from "./screens/About";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // listen for auth state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false); // 🔹 stop loading once auth is resolved
     });
 
-    return () => unsubscribe(); // cleanup
+    return () => unsubscribe();
   }, []);
+
+  if (loading) {
+    // 🔹 simple loading state (you can replace with spinner)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-lg">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Router>
         {user ? <Header /> : <HeaderGuest />}
         <Routes>
-          <Route path="/" element={user ? <Home /> : <LandingPage />} />
           <Route path="/authentication" element={<Authentication />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/"
+            element={
+              user ? (
+                <ProtectedRoute user={user}>
+                  <Home />
+                </ProtectedRoute>
+              ) : (
+                <LandingPage />
+              )
+            }
+          />
         </Routes>
       </Router>
     </div>

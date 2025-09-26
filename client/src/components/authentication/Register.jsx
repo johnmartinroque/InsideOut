@@ -7,14 +7,14 @@ function Register({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
+  const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setShowMessage(false);
-    setShowError(false);
+    setError("");
+    setShowSuccess(false);
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -24,13 +24,14 @@ function Register({ handleShowLoginForm }) {
       localStorage.setItem("userInfo", JSON.stringify(userCredential.user));
       setEmail("");
       setPassword("");
-      navigate("/");
-      setShowMessage(true);
+      setShowSuccess(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
     } catch (err) {
       console.error(err);
       setLoading(false);
-      setShowError(true);
-      console.log(err.code);
+      setError("Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -96,13 +97,15 @@ function Register({ handleShowLoginForm }) {
             </a>
           </div>
           {loading && <Spinner />}
-          {showError && (
+
+          {/* Error Alert */}
+          {error && (
             <div
-              class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+              className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
               role="alert"
             >
               <svg
-                class="shrink-0 inline w-4 h-4 me-3"
+                className="shrink-0 inline w-4 h-4 me-3"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -110,20 +113,20 @@ function Register({ handleShowLoginForm }) {
               >
                 <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
               </svg>
-              <span class="sr-only">Info</span>
               <div>
-                <span class="font-medium">Danger alert!</span> Change a few
-                things up and try submitting again.
+                <span className="font-medium">Error:</span> {error}
               </div>
             </div>
           )}
-          {showSuccess && (
+
+          {/* Success Alert */}
+          {showSuccess && !error && (
             <div
-              class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+              className="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50"
               role="alert"
             >
               <svg
-                class="shrink-0 inline w-4 h-4 me-3"
+                className="shrink-0 inline w-4 h-4 me-3"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -131,10 +134,9 @@ function Register({ handleShowLoginForm }) {
               >
                 <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
               </svg>
-              <span class="sr-only">Info</span>
               <div>
-                <span class="font-medium">Success alert!</span> Change a few
-                things up and try submitting again.
+                <span className="font-medium">Success:</span> Register
+                Successful
               </div>
             </div>
           )}

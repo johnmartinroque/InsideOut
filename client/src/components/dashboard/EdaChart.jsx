@@ -5,14 +5,13 @@ function EdaChart() {
   const chartConfig = {
     series: [
       {
-        name: "EDA (µS)", // <-- label for EDA data
+        name: "EDA (µS)", // label for EDA data
         data: [0.5, 0.8, 1.2, 0.9, 1.5, 1.1], // sample GSR/EDA values
       },
     ],
     options: {
       chart: {
         type: "bar",
-        height: 300,
         toolbar: { show: false },
       },
       plotOptions: {
@@ -23,24 +22,42 @@ function EdaChart() {
       },
       dataLabels: {
         enabled: true,
-        formatter: (val) => `${val} µS`, // show units
+        formatter: (val) => `${val} µS`, // append unit
       },
       xaxis: {
-        categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], // time or days
+        categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], // sample labels
         title: { text: "Days" },
       },
       yaxis: {
         title: { text: "Electrodermal Activity (µS)" },
         min: 0,
       },
-      colors: ["#00897b"], // teal/green for biometric feel
+      colors: ["#00897b"],
+
+      // 🔑 Make responsive (same as HeartRateChart)
+      responsive: [
+        {
+          breakpoint: 1024, // tablet
+          options: {
+            plotOptions: { bar: { columnWidth: "60%" } },
+          },
+        },
+        {
+          breakpoint: 640, // mobile
+          options: {
+            plotOptions: { bar: { columnWidth: "70%" } },
+            dataLabels: { enabled: false },
+            xaxis: { labels: { show: false } },
+          },
+        },
+      ],
     },
   };
 
   return (
-    <div className="relative flex flex-col rounded-xl bg-white p-6 shadow-md">
+    <div className="relative flex flex-col rounded-xl bg-white p-6 shadow-md w-full max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="w-max rounded-lg bg-gray-900 p-5 text-white">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -68,13 +85,12 @@ function EdaChart() {
       </div>
 
       {/* Chart */}
-      <div className="pt-6">
+      <div className="pt-6 w-full">
         <Chart
           options={chartConfig.options}
           series={chartConfig.series}
           type="bar"
-          height={250}
-          width={700}
+          height="300" // same height style as HeartRateChart
         />
       </div>
     </div>

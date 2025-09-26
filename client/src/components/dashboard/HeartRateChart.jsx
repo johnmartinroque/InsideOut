@@ -12,7 +12,6 @@ function HeartRateBarChart() {
     options: {
       chart: {
         type: "bar",
-        height: 300,
         toolbar: { show: false },
       },
       plotOptions: {
@@ -25,20 +24,38 @@ function HeartRateBarChart() {
         enabled: true,
       },
       xaxis: {
-        categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], // sample labels
+        categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         title: { text: "Days" },
       },
       yaxis: {
         title: { text: "BPM" },
       },
       colors: ["#1e88e5"],
+
+      // 🔑 Make responsive
+      responsive: [
+        {
+          breakpoint: 1024, // tablet
+          options: {
+            plotOptions: { bar: { columnWidth: "60%" } },
+          },
+        },
+        {
+          breakpoint: 640, // mobile
+          options: {
+            plotOptions: { bar: { columnWidth: "70%" } },
+            dataLabels: { enabled: false },
+            xaxis: { labels: { show: false } },
+          },
+        },
+      ],
     },
   };
 
   return (
-    <div className="relative flex flex-col rounded-xl bg-white p-6 shadow-md">
+    <div className="relative flex flex-col rounded-xl bg-white p-6 shadow-md w-full max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="w-max rounded-lg bg-gray-900 p-5 text-white">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -68,13 +85,12 @@ function HeartRateBarChart() {
       </div>
 
       {/* Chart */}
-      <div className="pt-6">
+      <div className="pt-6 w-full">
         <Chart
           options={chartConfig.options}
           series={chartConfig.series}
           type="bar"
-          height={200}
-          width={700}
+          height="300" // use only height
         />
       </div>
     </div>

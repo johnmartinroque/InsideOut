@@ -22,6 +22,7 @@ function Home() {
     <div>
       <p className="text-xl">{backendStatus}</p>
       <HeartRateChart />
+
       <EdaChart />
     </div>
   );

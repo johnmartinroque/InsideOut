@@ -2,6 +2,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase";
 import { Navigate, useNavigate } from "react-router-dom";
+import Spinner from "../Spinner";
 
 function Login({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
@@ -95,7 +96,7 @@ function Login({ handleShowLoginForm }) {
             Forgot password?
           </a>
         </div>
-        {loading ? <>Loading....</> : <></>}
+        {loading && <Spinner />}
         {showError ? (
           <div
             class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"

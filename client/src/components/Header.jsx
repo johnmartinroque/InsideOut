@@ -1,15 +1,17 @@
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 
 function Header() {
   const [user, setUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const handleLogout = async () => {
     try {
       await signOut(auth);
       localStorage.removeItem("userInfo");
+      navigate("/");
     } catch (err) {
       console.error(err);
     }

@@ -10,6 +10,7 @@ import LandingPage from "./screens/LandingPage";
 import Contact from "./screens/Contact";
 import About from "./screens/About";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./screens/NotFound";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,6 +42,7 @@ function App() {
           <Route path="/authentication" element={<Authentication />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
 
           {/* Protected Routes */}
           <Route

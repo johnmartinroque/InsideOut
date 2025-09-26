@@ -15,7 +15,7 @@ function LandingPage() {
         well-being.
       </p>
 
-      {/* Call to Action */}
+      {/* Login screen */}
       <Link
         to="/authentication"
         className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"

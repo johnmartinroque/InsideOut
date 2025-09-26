@@ -1,7 +1,7 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Spinner from "../Spinner";
 
 function Login({ handleShowLoginForm }) {
@@ -39,12 +39,20 @@ function Login({ handleShowLoginForm }) {
       setLoading(false);
     }
   };
+
   return (
-    <div className="bg-amber-100 flex justify-center">
-      <form className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
-        <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>
-        <p className="text-gray-500 text-sm mt-2">Please sign in to continue</p>
-        <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-6">
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-gray-200"
+      >
+        <h1 className="text-3xl font-bold text-gray-900 text-center">Login</h1>
+        <p className="text-gray-500 text-sm text-center mt-2">
+          Please sign in to continue
+        </p>
+
+        {/* Email */}
+        <div className="flex items-center w-full mt-8 bg-white border border-gray-300 h-12 rounded-full overflow-hidden pl-6 gap-2">
           <svg
             width="16"
             height="11"
@@ -61,15 +69,16 @@ function Login({ handleShowLoginForm }) {
           </svg>
           <input
             type="email"
-            placeholder="Email id"
-            className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
+            placeholder="Email"
+            className="bg-transparent text-gray-700 placeholder-gray-400 outline-none text-sm w-full h-full"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
-        <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+        {/* Password */}
+        <div className="flex items-center mt-4 w-full bg-white border border-gray-300 h-12 rounded-full overflow-hidden pl-6 gap-2">
           <svg
             width="13"
             height="17"
@@ -85,76 +94,60 @@ function Login({ handleShowLoginForm }) {
           <input
             type="password"
             placeholder="Password"
-            className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
+            className="bg-transparent text-gray-700 placeholder-gray-400 outline-none text-sm w-full h-full"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className="mt-5 text-left text-indigo-500">
-          <a className="text-sm" href="#">
+
+        {/* Forgot password */}
+        <div className="mt-3 text-right">
+          <a href="#" className="text-sm text-indigo-500 hover:underline">
             Forgot password?
           </a>
         </div>
+
+        {/* Spinner */}
         {loading && <Spinner />}
-        {/* Error Alert */}
+
+        {/* Alerts */}
         {error && (
           <div
-            className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50"
+            className="flex items-center p-3 mt-4 text-sm text-red-700 border border-red-300 rounded-lg bg-red-50"
             role="alert"
           >
-            <svg
-              className="shrink-0 inline w-4 h-4 me-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-            </svg>
-            <div>
-              <span className="font-medium">Error:</span> {error}
-            </div>
+            <span className="font-medium">Error:</span>&nbsp;{error}
           </div>
         )}
 
-        {/* Success Alert */}
         {showSuccess && !error && (
           <div
-            className="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50"
+            className="flex items-center p-3 mt-4 text-sm text-green-700 border border-green-300 rounded-lg bg-green-50"
             role="alert"
           >
-            <svg
-              className="shrink-0 inline w-4 h-4 me-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-            </svg>
-            <div>
-              <span className="font-medium">Success:</span> Login Successful
-            </div>
+            <span className="font-medium">Success:</span>&nbsp;Login Successful
           </div>
         )}
 
+        {/* Submit Button */}
         <button
           type="submit"
-          className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity cursor-pointer"
-          onClick={handleLogin}
+          className="mt-6 w-full h-12 rounded-full text-white font-medium bg-indigo-500 hover:bg-indigo-600 transition"
           disabled={loading}
         >
           Login
         </button>
-        <p className="text-gray-500 text-sm mt-3 mb-11">
+
+        {/* Switch to Register */}
+        <p className="text-gray-500 text-sm text-center mt-4">
           Don’t have an account?{" "}
-          <a
-            className="text-indigo-500 cursor-pointer"
+          <span
             onClick={handleShowLoginForm}
+            className="text-indigo-500 font-medium cursor-pointer hover:underline"
           >
             Sign up
-          </a>
+          </span>
         </p>
       </form>
     </div>

@@ -97,7 +97,7 @@ function Login({ handleShowLoginForm }) {
           </a>
         </div>
         {loading && <Spinner />}
-        {showError ? (
+        {showError && (
           <div
             class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
             role="alert"
@@ -117,10 +117,8 @@ function Login({ handleShowLoginForm }) {
               up and try submitting again.
             </div>
           </div>
-        ) : (
-          <></>
         )}
-        {showSuccess ? (
+        {showSuccess && (
           <div
             class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
             role="alert"
@@ -140,8 +138,6 @@ function Login({ handleShowLoginForm }) {
               things up and try submitting again.
             </div>
           </div>
-        ) : (
-          <></>
         )}
 
         <button

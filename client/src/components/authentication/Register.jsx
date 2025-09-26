@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import Spinner from "../Spinner";
 
 function Register({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setShowMessage(false);
+    setShowError(false);
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -19,9 +25,12 @@ function Register({ handleShowLoginForm }) {
       setEmail("");
       setPassword("");
       navigate("/");
+      setShowMessage(true);
     } catch (err) {
       console.error(err);
       setLoading(false);
+      setShowError(true);
+      console.log(err.code);
     } finally {
       setLoading(false);
     }
@@ -86,7 +95,50 @@ function Register({ handleShowLoginForm }) {
               Forgot password?
             </a>
           </div>
-          {loading ? <>loading..</> : <></>}
+          {loading && <Spinner />}
+          {showError && (
+            <div
+              class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+              role="alert"
+            >
+              <svg
+                class="shrink-0 inline w-4 h-4 me-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+              </svg>
+              <span class="sr-only">Info</span>
+              <div>
+                <span class="font-medium">Danger alert!</span> Change a few
+                things up and try submitting again.
+              </div>
+            </div>
+          )}
+          {showSuccess && (
+            <div
+              class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+              role="alert"
+            >
+              <svg
+                class="shrink-0 inline w-4 h-4 me-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+              </svg>
+              <span class="sr-only">Info</span>
+              <div>
+                <span class="font-medium">Success alert!</span> Change a few
+                things up and try submitting again.
+              </div>
+            </div>
+          )}
+
           <button
             type="submit"
             className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import HeartRateChart from "../components/dashboard/HeartRateChart";
+import EdaChart from "../components/dashboard/EdaChart";
 
 function Home() {
   const [backendStatus, setBackendStatus] = useState("Checking...");
@@ -19,6 +21,8 @@ function Home() {
   return (
     <div>
       <p className="text-xl">{backendStatus}</p>
+      <HeartRateChart />
+      <EdaChart />
     </div>
   );
 }

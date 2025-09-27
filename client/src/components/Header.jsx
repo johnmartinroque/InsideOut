@@ -7,6 +7,7 @@ function Header() {
   const [user, setUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false); // dropdown state
   const [isMenuOpen, setIsMenuOpen] = useState(false); // mobile nav state
+  const [currentNav, setCurrentNav] = useState("/");
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -18,6 +19,11 @@ function Header() {
       console.error(err);
     }
   };
+
+  const linkClass = (path) =>
+    currentNav === path
+      ? "block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
+      : "block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 lg:dark:hover:bg-transparent dark:border-gray-700";
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -96,33 +102,29 @@ function Header() {
                 <li>
                   <Link
                     to="/"
-                    className="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 
-                    lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
+                    onClick={() => setCurrentNav("/")}
+                    className={linkClass("/")}
                   >
                     Home
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="/report"
-                    className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 
-                    lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 
-                    dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 
-                    dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                  <Link
+                    to="/report"
+                    onClick={() => setCurrentNav("/report")}
+                    className={linkClass("/report")}
                   >
                     Daily Summary Report
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="/alerts"
-                    className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 
-                    lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 
-                    dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 
-                    dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                  <Link
+                    to="/alerts"
+                    onClick={() => setCurrentNav("/alerts")}
+                    className={linkClass("/alerts")}
                   >
                     Alerts and SMS History
-                  </a>
+                  </Link>
                 </li>
 
                 {/* Dropdown */}
@@ -130,9 +132,9 @@ function Header() {
                   <button
                     onClick={() => setIsOpen((prev) => !prev)}
                     className="flex items-center py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 
-                    hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 
-                    dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 
-                    dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+    hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 
+    dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 
+    dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     {user ? user.email : "Guest"}
                     <svg
@@ -154,15 +156,16 @@ function Header() {
                   {isOpen && (
                     <ul
                       className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg 
-                      dark:bg-gray-800 dark:border-gray-700"
+  dark:bg-gray-800 dark:border-gray-700 z-50"
                     >
                       {user ? (
                         <>
                           <li>
                             <Link
                               to="/profile"
+                              onClick={() => setCurrentNav("/profile")}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 
-                              dark:text-gray-300 dark:hover:bg-gray-600"
+          dark:text-gray-300 dark:hover:bg-gray-600"
                             >
                               Profile
                             </Link>
@@ -170,8 +173,8 @@ function Header() {
                           <li>
                             <button
                               onClick={handleLogout}
-                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 
-                              dark:text-gray-300 dark:hover:bg-gray-600"
+                              className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 
+          dark:text-gray-300 dark:hover:bg-gray-600"
                             >
                               Logout
                             </button>
@@ -182,8 +185,9 @@ function Header() {
                           <li>
                             <Link
                               to="/login"
+                              onClick={() => setCurrentNav("/")}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 
-                              dark:text-gray-300 dark:hover:bg-gray-600"
+          dark:text-gray-300 dark:hover:bg-gray-600"
                             >
                               Login
                             </Link>
@@ -191,8 +195,9 @@ function Header() {
                           <li>
                             <Link
                               to="/register"
+                              onClick={() => setCurrentNav("/register")}
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 
-                              dark:text-gray-300 dark:hover:bg-gray-600"
+          dark:text-gray-300 dark:hover:bg-gray-600"
                             >
                               Register
                             </Link>

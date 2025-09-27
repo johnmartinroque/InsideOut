@@ -11,6 +11,7 @@ import Contact from "./screens/Contact";
 import About from "./screens/About";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./screens/NotFound";
+import Camera from "./screens/Camera";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -55,6 +56,14 @@ function App() {
               ) : (
                 <LandingPage />
               )
+            }
+          />
+          <Route
+            path="/camera"
+            element={
+              <ProtectedRoute user={user}>
+                <Camera />
+              </ProtectedRoute>
             }
           />
         </Routes>

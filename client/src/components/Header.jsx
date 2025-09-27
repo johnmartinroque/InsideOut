@@ -119,6 +119,15 @@ function Header() {
                 </li>
                 <li>
                   <Link
+                    to="/camera"
+                    onClick={() => setCurrentNav("/camera")}
+                    className={linkClass("/camera")}
+                  >
+                    Camera
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to="/alerts"
                     onClick={() => setCurrentNav("/alerts")}
                     className={linkClass("/alerts")}

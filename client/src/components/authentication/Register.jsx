@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Spinner from "../Spinner";
+import { useNavigate } from "react-router-dom";
 
 function Register({ handleShowLoginForm }) {
   const [email, setEmail] = useState("");
@@ -9,7 +10,7 @@ function Register({ handleShowLoginForm }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
-
+  const navigate = useNavigate();
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -38,13 +39,17 @@ function Register({ handleShowLoginForm }) {
   };
 
   return (
-     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-6">
       <form
         onSubmit={handleRegister}
         className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-gray-200"
       >
-        <h1 className="text-3xl font-bold text-gray-900 text-center">Register</h1>
-        <p className="text-gray-500 text-sm text-center mt-2">Create an account</p>
+        <h1 className="text-3xl font-bold text-gray-900 text-center">
+          Register
+        </h1>
+        <p className="text-gray-500 text-sm text-center mt-2">
+          Create an account
+        </p>
 
         {/* Email */}
         <div className="flex items-center w-full mt-8 bg-white border border-gray-300 h-12 rounded-full overflow-hidden pl-6 gap-2">
@@ -114,7 +119,8 @@ function Register({ handleShowLoginForm }) {
             className="flex items-center p-3 mt-4 text-sm text-green-700 border border-green-300 rounded-lg bg-green-50"
             role="alert"
           >
-            <span className="font-medium">Success:</span>&nbsp;Register Successful
+            <span className="font-medium">Success:</span>&nbsp;Register
+            Successful
           </div>
         )}
 

@@ -1,4 +1,7 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +14,7 @@ function Login({ handleShowLoginForm }) {
 
   const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [resetMessage, setResetMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -35,6 +39,25 @@ function Login({ handleShowLoginForm }) {
     } catch (err) {
       console.error(err);
       setError("Invalid email or password. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address to reset password.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    setResetMessage("");
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetMessage("Password reset email sent! Please check your inbox.");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to send reset email. Please check your email address.");
     } finally {
       setLoading(false);
     }
@@ -103,9 +126,13 @@ function Login({ handleShowLoginForm }) {
 
         {/* Forgot password */}
         <div className="mt-3 text-right">
-          <a href="#" className="text-sm text-indigo-500 hover:underline">
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            className="text-sm text-indigo-500 hover:underline"
+          >
             Forgot password?
-          </a>
+          </button>
         </div>
 
         {/* Spinner */}
@@ -127,6 +154,15 @@ function Login({ handleShowLoginForm }) {
             role="alert"
           >
             <span className="font-medium">Success:</span>&nbsp;Login Successful
+          </div>
+        )}
+
+        {resetMessage && (
+          <div
+            className="flex items-center p-3 mt-4 text-sm text-blue-700 border border-blue-300 rounded-lg bg-blue-50"
+            role="alert"
+          >
+            <span className="font-medium">Info:</span>&nbsp;{resetMessage}
           </div>
         )}
 

@@ -11,7 +11,9 @@ import Contact from "./screens/Contact";
 import About from "./screens/About";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./screens/NotFound";
-import Camera from "./screens/Camera";
+import Camera from "./screens/CameraFeed.jsx";
+import CameraFeed from "./screens/CameraFeed.jsx";
+import Profile from "./screens/Profile.jsx";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -62,7 +64,15 @@ function App() {
             path="/camera"
             element={
               <ProtectedRoute user={user}>
-                <Camera />
+                <CameraFeed />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute user={user}>
+                <Profile />
               </ProtectedRoute>
             }
           />

@@ -14,19 +14,23 @@ from sklearn.neural_network import MLPClassifier
 # Load dataset
 data = pd.read_csv("mental_health_wearable_data.csv")
 
-# Select features and target
-X = data[["GSR_Values", "Gender"]].copy()
+# Expand EEG_Frequency_Bands into separate numeric columns
+eeg_cols = ["EEG1", "EEG2", "EEG3", "EEG4"]
+data[eeg_cols] = data["EEG_Frequency_Bands"].apply(lambda x: pd.Series(eval(x)))
+
+# Select features
+X = data[["GSR_Values", "Gender"] + eeg_cols].copy()
 y = data["Emotional_State"]
 
 # Encode categorical values
 le_gender = LabelEncoder()
-X["Gender"] = le_gender.fit_transform(X["Gender"])
+X["Gender"] = le_gender.fit_transform(X["Gender"])  # Female=0, Male=1 (depends on data)
 
 le_target = LabelEncoder()
 y = le_target.fit_transform(y)
 
 # Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
 # Scale features
 scaler = StandardScaler()
@@ -35,12 +39,12 @@ X_test = scaler.transform(X_test)
 
 # Define models
 models = {
-    "Logistic Regression": LogisticRegression(),
-    "SVM (RBF)": SVC(kernel="rbf", probability=True),
-    "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42),
-    "Gradient Boosting": GradientBoostingClassifier(n_estimators=100, random_state=42),
-    "KNN": KNeighborsClassifier(n_neighbors=5),
-    "MLP": MLPClassifier(hidden_layer_sizes=(50,), max_iter=500, random_state=42)
+    "Logistic Regression": LogisticRegression(max_iter=1000, class_weight="balanced"),
+    "SVM (RBF)": SVC(kernel="rbf", probability=True, class_weight="balanced"),
+    "Random Forest": RandomForestClassifier(n_estimators=200, random_state=42, class_weight="balanced"),
+    "Gradient Boosting": GradientBoostingClassifier(n_estimators=200, random_state=42),
+    "KNN": KNeighborsClassifier(n_neighbors=7),
+    "MLP": MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000, random_state=42)
 }
 
 print("Model Evaluation Results")

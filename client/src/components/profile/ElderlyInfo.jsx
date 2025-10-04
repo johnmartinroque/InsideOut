@@ -1,5 +1,5 @@
 import React from "react";
-import db, { collection, getDoc, getDocs } from "firebase/firestore";
+import { collection, getDoc, getDocs } from "firebase/firestore";
 
 function ElderlyInfo() {
   const fetchElderly = async () => {

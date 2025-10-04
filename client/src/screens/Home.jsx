@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HeartRateChart from "../components/dashboard/HeartRateChart";
 import EdaChart from "../components/dashboard/EdaChart";
+import Status from "../components/dashboard/Status";
 
 function Home() {
   const [backendStatus, setBackendStatus] = useState("Checking...");
@@ -24,6 +25,7 @@ function Home() {
       <HeartRateChart />
 
       <EdaChart />
+      <Status />
     </div>
   );
 }

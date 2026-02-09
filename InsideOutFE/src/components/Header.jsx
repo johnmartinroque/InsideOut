@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,13 +12,13 @@ function Header() {
     <header className="flex shadow-md py-4 px-4 sm:px-10 bg-white min-h-[70px] tracking-wide relative z-50">
       <div className="flex flex-wrap items-center justify-between gap-5 w-full">
         {/* Logo */}
-        <a href="#" className="max-sm:hidden">
+        <Link to="/" className="max-sm:hidden">
           <img
             src="https://readymadeui.com/readymadeui.svg"
             alt="logo"
             className="w-36"
           />
-        </a>
+        </Link>
         <a href="#" className="hidden max-sm:block">
           <img
             src="https://readymadeui.com/readymadeui-short.svg"
@@ -32,28 +33,28 @@ function Header() {
         >
           <ul className="lg:flex gap-x-4 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50">
             <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="hover:text-blue-700 text-blue-700 block font-medium text-[15px]"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
-              <a
-                href="#"
+              <Link
+                to="/profile"
                 className="hover:text-blue-700 text-slate-900 block font-medium text-[15px]"
               >
-                Team
-              </a>
+                Profile
+              </Link>
             </li>
             <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
-              <a
-                href="#"
+              <Link
+                to="/settings"
                 className="hover:text-blue-700 text-slate-900 block font-medium text-[15px]"
               >
-                Feature
-              </a>
+                Settings
+              </Link>
             </li>
             {/* Add more menu items here */}
           </ul>

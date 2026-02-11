@@ -19,7 +19,8 @@ import LandingPage from "./screens/LandingPage";
 import "./App.css";
 import Footer from "./components/Footer";
 import AboutUs from "./screens/AboutUs";
-
+import Camera from "./screens/Camera";
+import Spinner from "./components/Spinner";
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return null; // prevent flicker while checking auth
+  if (loading) return <Spinner />; // prevent flicker while checking auth
 
   return (
     <div className="App">
@@ -66,6 +67,15 @@ function App() {
             element={
               <PrivateRoute>
                 <Settings />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/camera"
+            element={
+              <PrivateRoute>
+                <Camera />
               </PrivateRoute>
             }
           />

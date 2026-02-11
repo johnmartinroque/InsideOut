@@ -27,6 +27,14 @@ function App() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
+    if (isExpanded && user) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isExpanded, user]);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         const token = await currentUser.getIdToken();
@@ -47,7 +55,7 @@ function App() {
   if (loading) return <Spinner />; // prevent flicker while checking auth
 
   return (
-    <div className="App min-h-screen flex flex-col">
+    <div className="App min-h-screen flex flex-col bg-gray-100">
       <Router>
         {user ? (
           <SideBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
@@ -56,13 +64,23 @@ function App() {
         )}
 
         {/* Body logic for sidebar */}
+          {user && isExpanded && (
           <div 
+            className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300" 
+            onClick={() => setIsExpanded(false)}
+            aria-hidden="true"
+          />
+        )}
+
+        <main 
+          onClick={() => isExpanded && setIsExpanded(false)} // 4. Close on content click
           className={`flex-1 flex flex-col transition-all duration-300 ${
             user 
               ? (isExpanded ? "pl-64" : "pl-20") 
               : "pl-0"
-          }`}
-          >
+          } ${isExpanded ? "cursor-pointer" : ""}`} // Change cursor to indicate click-to-close
+        >
+
         <div className="flex-1">    
         <Routes>
           <Route path="/" element={user ? <Home /> : <LandingPage />} />
@@ -103,7 +121,7 @@ function App() {
         </div>
 
         <Footer />
-      </div>
+      </main>
       </Router>
     </div>
   );

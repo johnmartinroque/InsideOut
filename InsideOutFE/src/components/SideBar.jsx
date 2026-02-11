@@ -4,10 +4,9 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import logoImg from "../assets/InsideOutLogo.png";
 
-function SideBar() {
+function SideBar({ isExpanded, setIsExpanded }) {
   const navigate = useNavigate();
   const [isDark, setIsDark] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true); // New state for collapsing
 
   const handleLogout = async () => {
     try {

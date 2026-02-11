@@ -18,6 +18,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import LandingPage from "./screens/LandingPage";
 import "./App.css";
 import Footer from "./components/Footer";
+import AboutUs from "./screens/AboutUs";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -72,6 +73,7 @@ function App() {
           {/* Public routes */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/about" element={<AboutUs />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer />

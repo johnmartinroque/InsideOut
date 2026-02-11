@@ -8,7 +8,7 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 import Home from "./screens/Home";
 import GuestHeader from "./components/GuestHeader";
-import UserHeader from "./components/UserHeader";
+import SideBar from "./components/SideBar";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import Register from "./screens/authentication/Register";
@@ -48,7 +48,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        {user ? <UserHeader /> : <GuestHeader />}
+        {user ? <SideBar /> : <GuestHeader />}
 
         <Routes>
           <Route path="/" element={user ? <Home /> : <LandingPage />} />

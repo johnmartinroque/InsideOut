@@ -41,10 +41,12 @@ function App() {
         localStorage.setItem("token", token);
         localStorage.setItem("uid", currentUser.uid);
         setUser(currentUser);
+        setIsExpanded(false);
       } else {
         localStorage.removeItem("token");
         localStorage.removeItem("uid");
         setUser(null);
+        setIsExpanded(false);
       }
       setLoading(false);
     });

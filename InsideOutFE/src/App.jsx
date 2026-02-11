@@ -24,6 +24,7 @@ import Spinner from "./components/Spinner";
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -46,10 +47,23 @@ function App() {
   if (loading) return <Spinner />; // prevent flicker while checking auth
 
   return (
-    <div className="App">
+    <div className="App min-h-screen flex flex-col">
       <Router>
-        {user ? <SideBar /> : <GuestHeader />}
+        {user ? (
+          <SideBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+        ) : (
+          <GuestHeader />
+        )}
 
+        {/* Body logic for sidebar */}
+          <div 
+          className={`flex-1 flex flex-col transition-all duration-300 ${
+            user 
+              ? (isExpanded ? "pl-64" : "pl-20") 
+              : "pl-0"
+          }`}
+          >
+        <div className="flex-1">    
         <Routes>
           <Route path="/" element={user ? <Home /> : <LandingPage />} />
 
@@ -86,7 +100,10 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </div>
+
         <Footer />
+      </div>
       </Router>
     </div>
   );

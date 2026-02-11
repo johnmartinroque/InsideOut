@@ -68,17 +68,15 @@ function App() {
           <div 
             className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300" 
             onClick={() => setIsExpanded(false)}
-            aria-hidden="true"
           />
         )}
 
         <main 
-          onClick={() => isExpanded && setIsExpanded(false)} // 4. Close on content click
           className={`flex-1 flex flex-col transition-all duration-300 ${
             user 
-              ? (isExpanded ? "pl-64" : "pl-20") 
+              ? "pl-20" 
               : "pl-0"
-          } ${isExpanded ? "cursor-pointer" : ""}`} // Change cursor to indicate click-to-close
+          }`}
         >
 
         <div className="flex-1">    

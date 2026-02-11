@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import Home from "./screens/Home";
 import GuestHeader from "./components/GuestHeader";
@@ -9,6 +14,10 @@ import Settings from "./screens/Settings";
 import Register from "./screens/authentication/Register";
 import Login from "./screens/authentication/Login";
 import { auth } from "./firebase";
+import PrivateRoute from "./components/PrivateRoute";
+import LandingPage from "./screens/LandingPage";
+import "./App.css";
+import Footer from "./components/Footer";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,17 +44,39 @@ function App() {
   if (loading) return null; // prevent flicker while checking auth
 
   return (
-    <Router>
-      {user ? <UserHeader /> : <GuestHeader />}
+    <div className="App">
+      <Router>
+        {user ? <UserHeader /> : <GuestHeader />}
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/" element={user ? <Home /> : <LandingPage />} />
+
+          {/* Protected routes */}
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Settings />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Public routes */}
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </div>
   );
 }
 

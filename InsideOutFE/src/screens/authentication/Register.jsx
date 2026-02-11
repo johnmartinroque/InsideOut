@@ -22,8 +22,32 @@ function Register() {
 
     try {
       setLoading(true);
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/"); // redirect after register
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      const user = userCredential.user;
+
+      // 🔥 Get Firebase ID token
+      const token = await user.getIdToken();
+
+      // 💾 Save token & uid
+      localStorage.setItem("token", token);
+      localStorage.setItem("uid", user.uid);
+
+      // 💾 Save user info
+      const userInfo = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+        photoURL: user.photoURL || "",
+      };
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
+      navigate("/");
     } catch (err) {
       setError(err.message);
     } finally {

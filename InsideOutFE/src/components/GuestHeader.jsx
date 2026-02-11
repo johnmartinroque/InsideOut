@@ -1,7 +1,7 @@
 import React, { use, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function Header() {
+function GuestHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -44,18 +44,10 @@ function Header() {
             </li>
             <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
               <Link
-                to="/profile"
+                to="/about"
                 className="hover:text-blue-700 text-slate-900 block font-medium text-[15px]"
               >
-                Profile
-              </Link>
-            </li>
-            <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
-              <Link
-                to="/settings"
-                className="hover:text-blue-700 text-slate-900 block font-medium text-[15px]"
-              >
-                Settings
+                About
               </Link>
             </li>
             {/* Add more menu items here */}
@@ -93,4 +85,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default GuestHeader;

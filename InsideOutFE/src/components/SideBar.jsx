@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
@@ -6,6 +6,7 @@ import logoImg from "../assets/InsideOutLogo.png";
 
 function SideBar() {
   const navigate = useNavigate();
+  const [isDark, setIsDark] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -90,6 +91,26 @@ function SideBar() {
           Settings
         </button>
 
+        {/* Dark Mode Toggle */}
+          <div className={`${itemClass} justify-between`}>
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            Dark Mode
+          </div>
+          
+          {/* Switch UI */}
+          <div 
+            onClick={() => setIsDark(!isDark)}
+            className={`w-10 h-5 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}
+          >
+            <div 
+              className={`bg-white w-3 h-3 rounded-full shadow-md transform transition-transform duration-300 ${isDark ? 'translate-x-5' : 'translate-x-0'}`}
+            />
+          </div>
+        </div>
+
           {/* Logout */}
         <button
           onClick={handleLogout}
@@ -109,7 +130,7 @@ function SideBar() {
           </svg>
           Logout
         </button>
-
+          
       </nav>
 
     </div>

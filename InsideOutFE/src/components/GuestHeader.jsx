@@ -1,5 +1,6 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logoImg from "../assets/InsideOutLogo.png";
 
 function GuestHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,14 +17,15 @@ function GuestHeader() {
         {/* Logo */}
         <Link to="/" className="max-sm:hidden">
           <img
-            src="https://readymadeui.com/readymadeui.svg"
+            src={logoImg} 
             alt="logo"
-            className="w-36"
+            className="w-20"
           />
         </Link>
+
         <a href="#" className="hidden max-sm:block">
           <img
-            src="https://readymadeui.com/readymadeui-short.svg"
+            src={logoImg}
             alt="logo"
             className="w-9"
           />
@@ -33,11 +35,11 @@ function GuestHeader() {
         <div
           className={`max-lg:hidden lg:block ${menuOpen ? "block" : "hidden"}`}
         >
-          <ul className="lg:flex gap-x-4 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50">
+          <ul className="lg:flex gap-x-4 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50 ml-25">
             <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
               <Link
                 to="/"
-                className="hover:text-blue-700 text-blue-700 block font-medium text-[15px]"
+                className="hover:text-blue-700 block font-medium text-[15px]"
               >
                 Home
               </Link>

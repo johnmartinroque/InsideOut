@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { use, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setMenuOpen(!menuOpen);
@@ -62,10 +64,16 @@ function Header() {
 
         {/* Buttons */}
         <div className="flex max-lg:ml-auto space-x-4">
-          <button className="px-4 py-2 text-sm rounded-full font-medium text-slate-900 border border-gray-400 bg-transparent hover:bg-gray-50 transition-all">
+          <button
+            className="px-4 py-2 text-sm rounded-full font-medium text-slate-900 border border-gray-400 bg-transparent hover:bg-gray-50 transition-all"
+            onClick={() => navigate("/login")}
+          >
             Login
           </button>
-          <button className="px-4 py-2 text-sm rounded-full font-medium text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all">
+          <button
+            className="px-4 py-2 text-sm rounded-full font-medium text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all"
+            onClick={() => navigate("/register")}
+          >
             Sign up
           </button>
 

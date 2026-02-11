@@ -37,3 +37,8 @@ dist/
 
 # ===== Cache =====
 .cache/
+
+
+
+
+serviceAccountKey.json

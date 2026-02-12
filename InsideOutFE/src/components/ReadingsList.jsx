@@ -8,11 +8,13 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import InputElderlyIDModal from "./modals/InputElderlyID";
 
 export default function ReadingsList() {
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +38,9 @@ export default function ReadingsList() {
         const elderlyID = companionData.elderlyID;
 
         if (!elderlyID) {
-          setError("No elderly assigned");
+          // Show the modal if no elderly assigned
+          setShowModal(true);
+          setError(""); // clear error text
           return;
         }
 
@@ -64,10 +68,17 @@ export default function ReadingsList() {
   }, []);
 
   if (loading) return <p className="p-4">Loading readings...</p>;
-  if (error) return <p className="p-4 text-red-500">{error}</p>;
 
   return (
     <div className="p-6">
+      {/* Modal for entering elderly ID */}
+      <InputElderlyIDModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+      />
+
+      {error && <p className="p-4 text-red-500">{error}</p>}
+
       <h2 className="text-xl font-bold mb-4">Elderly Readings</h2>
 
       {readings.length === 0 ? (

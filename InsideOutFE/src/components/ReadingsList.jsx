@@ -1,22 +1,49 @@
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+} from "firebase/firestore";
 
 export default function ReadingsList() {
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchReadings = async () => {
+    const fetchData = async () => {
       try {
-        const readingsRef = collection(
-          db,
-          "elderly",
-          "b9sYa0JohQsB68ieybNy",
-          "readings",
-        );
+        const user = auth.currentUser;
+        if (!user) {
+          setError("User not logged in");
+          return;
+        }
 
+        // 1️⃣ Get companion document
+        const companionRef = doc(db, "companion", user.uid);
+        const companionSnap = await getDoc(companionRef);
+
+        if (!companionSnap.exists()) {
+          setError("Companion profile not found");
+          return;
+        }
+
+        const companionData = companionSnap.data();
+        const elderlyID = companionData.elderlyID;
+
+        if (!elderlyID) {
+          setError("No elderly assigned");
+          return;
+        }
+
+        // 2️⃣ Fetch readings
+        const readingsRef = collection(db, "elderly", elderlyID, "readings");
         const q = query(readingsRef, orderBy("timestamp", "desc"));
+
         const snapshot = await getDocs(q);
 
         const list = snapshot.docs.map((doc) => ({
@@ -26,45 +53,48 @@ export default function ReadingsList() {
 
         setReadings(list);
       } catch (err) {
-        console.error("Error fetching readings:", err);
+        console.error(err);
+        setError("Failed to fetch readings");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchReadings();
+    fetchData();
   }, []);
 
   if (loading) return <p className="p-4">Loading readings...</p>;
+  if (error) return <p className="p-4 text-red-500">{error}</p>;
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Sensor Readings</h2>
+      <h2 className="text-xl font-bold mb-4">Elderly Readings</h2>
 
-      <div className="space-y-3">
-        {readings.map((reading) => (
-          <div
-            key={reading.id}
-            className="border rounded-lg p-4 shadow-sm bg-white"
-          >
-            <p>
-              <strong>ID:</strong> {reading.id}
-            </p>
-            <p>
-              <strong>Heart Rate:</strong> {reading.heart_rate}
-            </p>
-            <p>
-              <strong>GSR:</strong> {reading.gsr}
-            </p>
-            <p>
-              <strong>Status:</strong> {reading.status}
-            </p>
-            <p className="text-sm text-gray-500">
-              {reading.timestamp?.toDate().toLocaleString()}
-            </p>
-          </div>
-        ))}
-      </div>
+      {readings.length === 0 ? (
+        <p>No readings found.</p>
+      ) : (
+        <div className="space-y-3">
+          {readings.map((r) => (
+            <div key={r.id} className="border rounded-lg p-4 shadow bg-white">
+              <p>
+                <strong>ID:</strong> {r.id}
+              </p>
+              <p>
+                <strong>Heart Rate:</strong> {r.heart_rate}
+              </p>
+              <p>
+                <strong>GSR:</strong> {r.gsr}
+              </p>
+              <p>
+                <strong>Status:</strong> {r.status}
+              </p>
+              <p className="text-sm text-gray-500">
+                {r.timestamp?.toDate().toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

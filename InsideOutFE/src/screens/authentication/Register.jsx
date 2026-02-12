@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 function Register() {
   const navigate = useNavigate();
@@ -31,6 +32,13 @@ function Register() {
 
       const user = userCredential.user;
 
+      // 🔥 Save companion document
+      await setDoc(doc(db, "companion", user.uid), {
+        companionID: user.uid,
+        email: user.email,
+        createdAt: new Date(),
+      });
+
       // 🔥 Get Firebase ID token
       const token = await user.getIdToken();
 
@@ -42,9 +50,8 @@ function Register() {
       const userInfo = {
         uid: user.uid,
         email: user.email,
-        displayName: user.displayName || "",
-        photoURL: user.photoURL || "",
       };
+
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       navigate("/");
@@ -54,7 +61,6 @@ function Register() {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">

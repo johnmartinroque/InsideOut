@@ -10,10 +10,10 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # ---------------- CONFIG ----------------
-user_id = "b9sYa0JohQsB68ieybNy"
+user_id = "N650pQK08tF0f5bZaTGo"
 start_date = datetime(2026, 2, 12, 0, 0)  # change start date if needed
 days = 2
-interval_minutes = 30
+interval_minutes = 60
 
 # month format mapping
 months = ["jan","feb","mar","apr","may","jun",

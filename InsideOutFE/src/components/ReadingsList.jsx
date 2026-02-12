@@ -9,6 +9,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import InputElderlyIDModal from "./modals/InputElderlyID";
+import Spinner from "./Spinner";
 
 export default function ReadingsList() {
   const [readings, setReadings] = useState([]);
@@ -67,7 +68,12 @@ export default function ReadingsList() {
     fetchData();
   }, []);
 
-  if (loading) return <p className="p-4">Loading readings...</p>;
+  if (loading)
+    return (
+      <p className="p-4">
+        <Spinner />
+      </p>
+    );
 
   return (
     <div className="p-6">

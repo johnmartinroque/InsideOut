@@ -21,7 +21,9 @@ import Footer from "./components/Footer";
 import AboutUs from "./screens/AboutUs";
 import Camera from "./screens/Camera";
 import Spinner from "./components/Spinner";
+
 import "./index.css";
+import Reports from "./screens/Reports";
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -89,6 +91,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Profile />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/reports"
+                element={
+                  <PrivateRoute>
+                    <Reports />
                   </PrivateRoute>
                 }
               />

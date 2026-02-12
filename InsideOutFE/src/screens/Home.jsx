@@ -1,13 +1,7 @@
 import React from "react";
-import ReadingsList from "../components/ReadingsList";
 
 function Home() {
-  return (
-    <div>
-      Home
-      <ReadingsList />
-    </div>
-  );
+  return <div>Home</div>;
 }
 
 export default Home;

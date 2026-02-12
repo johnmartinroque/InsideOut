@@ -1,6 +1,7 @@
 import React from "react";
 import ElderlyInfo from "../components/profile/ElderlyInfo";
 import CompanionInfo from "../components/profile/CompanionInfo";
+import CompanionsList from "../components/CompanionsList";
 
 function Profile() {
   return (
@@ -17,6 +18,7 @@ function Profile() {
       <div className="grid md:grid-cols-2 gap-10 w-full max-w-5xl">
         <CompanionInfo />
         <ElderlyInfo />
+        <CompanionsList />
       </div>
     </div>
   );

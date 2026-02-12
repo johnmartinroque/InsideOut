@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 function Login() {
   const navigate = useNavigate();
@@ -18,30 +19,41 @@ function Login() {
     try {
       setLoading(true);
 
+      // Sign in
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password,
       );
-
       const user = userCredential.user;
 
-      // 🔥 Get Firebase ID token
+      // Get Firebase ID token
       const token = await user.getIdToken();
 
-      // 💾 Save token + uid
+      // Fetch companion document to get elderlyID
+      const companionRef = doc(db, "companion", user.uid);
+      const companionSnap = await getDoc(companionRef);
+      let elderlyID = "";
+      if (companionSnap.exists()) {
+        const companionData = companionSnap.data();
+        elderlyID = companionData.elderlyID || "";
+      }
+
+      // Save token + uid
       localStorage.setItem("token", token);
       localStorage.setItem("uid", user.uid);
 
-      // 💾 Save user info
+      // Save user info including elderlyID
       const userInfo = {
         uid: user.uid,
         email: user.email,
+        elderlyID, // added here
       };
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       navigate("/"); // redirect after login
     } catch (err) {
+      console.error(err);
       setError("Invalid email or password");
     } finally {
       setLoading(false);

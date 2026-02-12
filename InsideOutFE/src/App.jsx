@@ -21,6 +21,7 @@ import Footer from "./components/Footer";
 import AboutUs from "./screens/AboutUs";
 import Camera from "./screens/Camera";
 import Spinner from "./components/Spinner";
+import "./index.css";
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -66,62 +67,59 @@ function App() {
         )}
 
         {/* Body logic for sidebar */}
-          {user && isExpanded && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300" 
+        {user && isExpanded && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
             onClick={() => setIsExpanded(false)}
           />
         )}
 
-        <main 
+        <main
           className={`flex-1 flex flex-col transition-all duration-300 ${
-            user 
-              ? "pl-20" 
-              : "pl-0"
+            user ? "pl-20" : "pl-0"
           }`}
         >
+          <div className="flex-1">
+            <Routes>
+              <Route path="/" element={user ? <Home /> : <LandingPage />} />
 
-        <div className="flex-1">    
-        <Routes>
-          <Route path="/" element={user ? <Home /> : <LandingPage />} />
+              {/* Protected routes */}
+              <Route
+                path="/profile"
+                element={
+                  <PrivateRoute>
+                    <Profile />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <PrivateRoute>
+                    <Settings />
+                  </PrivateRoute>
+                }
+              />
 
-          {/* Protected routes */}
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <PrivateRoute>
-                <Settings />
-              </PrivateRoute>
-            }
-          />
+              <Route
+                path="/camera"
+                element={
+                  <PrivateRoute>
+                    <Camera />
+                  </PrivateRoute>
+                }
+              />
 
-          <Route
-            path="/camera"
-            element={
-              <PrivateRoute>
-                <Camera />
-              </PrivateRoute>
-            }
-          />
+              {/* Public routes */}
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
 
-          {/* Public routes */}
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        </div>
-
-        <Footer />
-      </main>
+          <Footer />
+        </main>
       </Router>
     </div>
   );

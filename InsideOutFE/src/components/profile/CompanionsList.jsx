@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
+import Spinner from "../Spinner";
 
 export default function CompanionsList() {
   const [companions, setCompanions] = useState([]);
@@ -49,7 +50,12 @@ export default function CompanionsList() {
     fetchCompanions();
   }, [elderlyID]);
 
-  if (loading) return <p className="p-4">Loading companions...</p>;
+  if (loading)
+    return (
+      <p className="p-4">
+        <Spinner />
+      </p>
+    );
   if (error) return <p className="p-4 text-red-500">{error}</p>;
   if (companions.length === 0)
     return <p className="p-4">No companions found.</p>;

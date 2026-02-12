@@ -1,7 +1,8 @@
 import React from "react";
 import ElderlyInfo from "../components/profile/ElderlyInfo";
 import CompanionInfo from "../components/profile/CompanionInfo";
-import CompanionsList from "../components/CompanionsList";
+import CompanionsList from "../components/profile/CompanionsList";
+import ElderlyInformation from "../components/profile/ElderlyInformation";
 
 function Profile() {
   return (
@@ -19,6 +20,7 @@ function Profile() {
         <CompanionInfo />
         <ElderlyInfo />
         <CompanionsList />
+        <ElderlyInformation />
       </div>
     </div>
   );

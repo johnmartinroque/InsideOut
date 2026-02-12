@@ -1,20 +1,27 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
+from datetime import datetime
 
-# Initialize Firebase Admin with service account
+# Initialize Firebase
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-# Example: create a document in "users" collection
-new_user = {
-    "uid": "user_123",
-    "email": "test@example.com",
-    "name": "John Doe",
-    "age": 25
+# reference to subcollection
+data_ref = db.collection("elderly") \
+             .document("b9sYa0JohQsB68ieybNy") \
+             .collection("data")
+
+# data to insert
+new_data = {
+    "gsr": 3.8,
+    "heart_rate": 72,
+    "status": "calm",
+    "timestamp": datetime.utcnow()
 }
 
-db.collection("users").document("user_123").set(new_user)
+# auto-generate document ID
+data_ref.add(new_data)
 
-print("User added to Firestore successfully!")
+print("Data added successfully!")

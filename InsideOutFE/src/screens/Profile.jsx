@@ -6,7 +6,7 @@ import ElderlyInformation from "../components/profile/ElderlyInformation";
 
 function Profile() {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start py-16 px-6">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start py-4 md:py-16 px-6">
       {/* Page Title */}
       <h1 className="text-4xl md:text-5xl font-extrabold mb-10 text-gray-800 text-center relative">
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-600">

@@ -27,9 +27,11 @@ function SideBar({ isExpanded, setIsExpanded }) {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-screen transition-all duration-300 bg-white shadow-xl z-50 flex flex-col p-4 text-gray-700 ${
-        isExpanded ? "w-64" : "w-20"
-      }`}
+      className={`fixed top-0 left-0 h-screen transition-all duration-300 z-50 flex flex-col p-4 
+        ${isExpanded 
+          ? "w-64 bg-white shadow-xl text-gray-700" 
+          : "w-20 bg-white shadow-xl text-gray-700 max-[426px]:w-12 max-[426px]:bg-transparent max-[426px]:shadow-none"
+        }`}
     >
       {/* Header: Logo and Toggle Arrow */}
       <div className="flex items-center justify-between mb-6">
@@ -48,7 +50,11 @@ function SideBar({ isExpanded, setIsExpanded }) {
 
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 rounded-full hover:bg-gray-100 transition-colors ml-auto"
+          className={`p-2 rounded-full transition-colors ml-auto 
+            ${isExpanded 
+              ? "hover:bg-gray-100" 
+              : "hover:bg-gray-100 max-[426px]:bg-white max-[426px]:shadow-md"
+            }`}
         >
           {/* Arrow Icon - rotates based on state */}
           <svg
@@ -68,7 +74,9 @@ function SideBar({ isExpanded, setIsExpanded }) {
         </button>
       </div>
 
-      <nav className="flex flex-col gap-2 text-base font-normal overflow-hidden">
+      <nav className={`flex flex-col gap-2 text-base font-normal overflow-hidden 
+        ${!isExpanded ? "max-[426px]:hidden" : "flex"}`}
+      >
         {/* Dashboard */}
         <button
           onClick={() => navigate("/")}

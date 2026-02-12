@@ -4,6 +4,8 @@ import { doc, updateDoc } from "firebase/firestore";
 
 export default function InputElderlyIDModal({ isOpen, onClose }) {
   const [elderlyID, setElderlyID] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -16,15 +18,24 @@ export default function InputElderlyIDModal({ isOpen, onClose }) {
     const user = auth.currentUser;
     if (!user) return setMessage("User not logged in");
 
+    // simple validation
+    if (!elderlyID.trim() || !phoneNumber.trim() || !fullName.trim()) {
+      return setMessage("Please fill in all fields");
+    }
+
     try {
       setLoading(true);
 
       await updateDoc(doc(db, "companion", user.uid), {
         elderlyID: elderlyID.trim(),
+        phoneNumber: phoneNumber.trim(),
+        fullName: fullName.trim(),
       });
 
-      setMessage("Elderly ID saved successfully!");
+      setMessage("Information saved successfully!");
       setElderlyID("");
+      setPhoneNumber("");
+      setFullName("");
 
       setTimeout(() => {
         onClose();
@@ -32,7 +43,7 @@ export default function InputElderlyIDModal({ isOpen, onClose }) {
       }, 1200);
     } catch (err) {
       console.error(err);
-      setMessage("Failed to save Elderly ID");
+      setMessage("Failed to save information");
     } finally {
       setLoading(false);
     }
@@ -56,11 +67,37 @@ export default function InputElderlyIDModal({ isOpen, onClose }) {
             </button>
           </div>
 
-          {/* Body */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Full Name */}
+            <div>
+              <label className="block text-sm mb-1">Full Name</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Juan Dela Cruz"
+                required
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Phone Number */}
+            <div>
+              <label className="block text-sm mb-1">Phone Number</label>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="09XXXXXXXXX"
+                required
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Elderly ID */}
             <div>
               <label className="block text-sm mb-1">Enter Elderly ID</label>
-
               <input
                 type="text"
                 value={elderlyID}
@@ -71,10 +108,12 @@ export default function InputElderlyIDModal({ isOpen, onClose }) {
               />
             </div>
 
+            {/* Message */}
             {message && (
               <p className="text-sm text-center text-blue-600">{message}</p>
             )}
 
+            {/* Button */}
             <button
               type="submit"
               disabled={loading}

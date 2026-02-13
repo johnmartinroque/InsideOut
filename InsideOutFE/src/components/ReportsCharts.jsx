@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { auth, db } from "../firebase";
 import {
   doc,
   getDoc,
@@ -9,11 +8,22 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { useParams } from "react-router-dom";
-import Spinner from "../components/Spinner";
-import ReportsCharts from "../components/ReportsCharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import Spinner from "./Spinner";
+import { auth, db } from "../firebase";
 
-export default function ReportDetailed() {
-  const { id } = useParams(); // day id from URL
+export default function ReportsCharts() {
+  const { id } = useParams();
+
   const [data, setData] = useState([]);
   const [avg, setAvg] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +38,7 @@ export default function ReportDetailed() {
           return;
         }
 
-        // 1️⃣ get companion
+        // companion
         const companionRef = doc(db, "companion", user.uid);
         const companionSnap = await getDoc(companionRef);
 
@@ -38,12 +48,8 @@ export default function ReportDetailed() {
         }
 
         const elderlyID = companionSnap.data().elderlyID;
-        if (!elderlyID) {
-          setError("No elderly assigned");
-          return;
-        }
 
-        // 2️⃣ get daily averages
+        // daily doc
         const dayRef = doc(db, "elderly", elderlyID, "readings", id);
         const daySnap = await getDoc(dayRef);
 
@@ -54,7 +60,7 @@ export default function ReportDetailed() {
 
         setAvg(daySnap.data());
 
-        // 3️⃣ fetch times subcollection
+        // times subcollection
         const timesRef = collection(
           db,
           "elderly",
@@ -67,15 +73,21 @@ export default function ReportDetailed() {
         const q = query(timesRef, orderBy("timestamp", "asc"));
         const snap = await getDocs(q);
 
-        const readings = snap.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        }));
+        const readings = snap.docs.map((d) => {
+          const t = d.data().timestamp?.toDate();
+          return {
+            time: t
+              ? t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+              : "--",
+            heartRate: d.data().heart_rate,
+            gsr: d.data().gsr,
+          };
+        });
 
         setData(readings);
       } catch (err) {
         console.error(err);
-        setError("Failed to load report");
+        setError("Failed to load chart");
       } finally {
         setLoading(false);
       }
@@ -96,48 +108,40 @@ export default function ReportDetailed() {
   return (
     <div className="p-6 space-y-6">
       {/* HEADER */}
-      <div className="border rounded-xl p-5 shadow bg-white">
-        <h1 className="text-2xl font-bold mb-3">Report — {id}</h1>
+      <div className="bg-white shadow rounded-xl p-5">
+        <h1 className="text-2xl font-bold">Report Chart — {id}</h1>
 
-        <div className="flex gap-8">
+        <div className="flex gap-10 mt-3">
           <p>
             <strong>Average HR:</strong> {avg?.averageHB ?? "--"}
           </p>
-
           <p>
             <strong>Average GSR:</strong> {avg?.averageGSR ?? "--"}
           </p>
         </div>
       </div>
 
-      {/* READINGS LIST */}
-      <div className="space-y-3">
-        {data.length === 0 ? (
-          <p>No readings found for this day.</p>
-        ) : (
-          data.map((r) => (
-            <div key={r.id} className="border rounded-lg p-4 shadow bg-white">
-              <p>
-                <strong>Time:</strong>{" "}
-                {r.timestamp?.toDate().toLocaleTimeString()}
-              </p>
+      {/* CHART */}
+      <div className="bg-white shadow rounded-xl p-5 h-[400px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
 
-              <p>
-                <strong>Heart Rate:</strong> {r.heart_rate}
-              </p>
+            <Line
+              type="monotone"
+              dataKey="heartRate"
+              strokeWidth={3}
+              name="Heart Rate"
+            />
 
-              <p>
-                <strong>GSR:</strong> {r.gsr}
-              </p>
-
-              <p>
-                <strong>Status:</strong> {r.status}
-              </p>
-            </div>
-          ))
-        )}
+            <Line type="monotone" dataKey="gsr" strokeWidth={3} name="GSR" />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
-      <ReportsCharts />
     </div>
   );
 }

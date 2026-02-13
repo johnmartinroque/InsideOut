@@ -24,6 +24,7 @@ import Spinner from "./components/Spinner";
 
 import "./index.css";
 import Reports from "./screens/Reports";
+import ReportDetailed from "./screens/ReportDetailed";
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -78,9 +79,7 @@ function App() {
 
         <main
           className={`flex-1 flex flex-col transition-all duration-300 ${
-            user 
-              ? "pl-20 max-[426px]:pl-0 max-[426px]:pt-18"
-              : "pl-0"
+            user ? "pl-20 max-[426px]:pl-0 max-[426px]:pt-18" : "pl-0"
           }`}
         >
           <div className={`flex-1 ${user ? "max-[426px]:px-5" : ""}`}>
@@ -101,6 +100,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Reports />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/report/:id"
+                element={
+                  <PrivateRoute>
+                    <ReportDetailed />
                   </PrivateRoute>
                 }
               />

@@ -111,8 +111,8 @@ export default function ReportDetailed() {
         </div>
       </div>
 
-      {/* READINGS LIST */}
-      <div className="space-y-3">
+      {/* 
+        <div className="space-y-3">
         {data.length === 0 ? (
           <p>No readings found for this day.</p>
         ) : (
@@ -138,6 +138,9 @@ export default function ReportDetailed() {
           ))
         )}
       </div>
+      
+      */}
+
       <div className="space-y-6">
         <ReportHeartbeatChart />
         <ReportGSRChart />

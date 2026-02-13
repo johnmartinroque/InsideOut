@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import InputElderlyIDModal from "../components/modals/InputElderlyID";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
+import DateTime from "../components/DateTime";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -37,6 +38,7 @@ function Home() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
       />
+      <DateTime />
     </div>
   );
 }

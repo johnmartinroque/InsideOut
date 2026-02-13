@@ -63,8 +63,10 @@ def process_averages():
                 print("No data received in last interval.")
                 continue
 
+            # Compute 10-minute interval average
             avg_gsr = round(sum(x["gsr"] for x in buffer) / len(buffer), 2)
             avg_hr = round(sum(x["hr"] for x in buffer) / len(buffer), 2)
+            interval_count = len(buffer)
 
             buffer.clear()
 
@@ -84,6 +86,7 @@ def process_averages():
         else:
             status = "neutral"
 
+        # --- Save individual timestamped reading ---
         data = {
             "timestamp": now,
             "gsr": avg_gsr,
@@ -97,7 +100,34 @@ def process_averages():
             .document(time_doc_id) \
             .set(data)
 
+        # --- Update running daily average ---
+        daily_doc_ref = readings_ref.document(day_doc_id)
+        daily_doc = daily_doc_ref.get().to_dict()
+
+        if daily_doc and "count" in daily_doc and "averageGSR" in daily_doc and "averageHB" in daily_doc:
+            old_count = daily_doc["count"]
+            old_avg_gsr = daily_doc["averageGSR"]
+            old_avg_hr = daily_doc["averageHB"]
+
+            new_count = old_count + interval_count
+            new_avg_gsr = round((old_avg_gsr * old_count + avg_gsr * interval_count) / new_count, 2)
+            new_avg_hr = round((old_avg_hr * old_count + avg_hr * interval_count) / new_count, 2)
+        else:
+            # First interval of the day
+            new_count = interval_count
+            new_avg_gsr = avg_gsr
+            new_avg_hr = avg_hr
+
+        daily_doc_ref.set({
+            "averageGSR": new_avg_gsr,
+            "averageHB": new_avg_hr,
+            "count": new_count,
+            "lastUpdated": now
+        }, merge=True)
+
         print(f"💾 Saved avg → {day_doc_id}/times/{time_doc_id} | GSR={avg_gsr} HR={avg_hr}")
+        print(f"📊 Updated running daily averages → {day_doc_id} | averageGSR={new_avg_gsr} averageHB={new_avg_hr} (count={new_count})")
+
 
 
 # ---------------- RUN ----------------

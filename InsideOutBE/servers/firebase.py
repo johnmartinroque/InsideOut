@@ -11,15 +11,13 @@ db = firestore.client()
 
 # ---------------- CONFIG ----------------
 user_id = "N650pQK08tF0f5bZaTGo"
-start_date = datetime(2026, 2, 12, 0, 0)  # change start date if needed
+start_date = datetime(2026, 2, 12, 0, 0)
 days = 2
 interval_minutes = 60
 
-# month format mapping
 months = ["jan","feb","mar","apr","may","jun",
           "jul","aug","sep","oct","nov","dec"]
 
-# reference to readings collection
 readings_ref = db.collection("elderly").document(user_id).collection("readings")
 
 # ---------------- GENERATE DATA ----------------
@@ -28,12 +26,11 @@ end_date = start_date + timedelta(days=days)
 
 while current < end_date:
 
-    # ID format → 12feb1305
-    doc_id = (
-        f"{current.day}"
-        f"{months[current.month-1]}"
-        f"{current.strftime('%H%M')}"
-    )
+    # Parent document ID → 12feb
+    day_doc_id = f"{current.day}{months[current.month-1]}"
+
+    # Subdocument ID → 1300
+    time_doc_id = current.strftime("%H%M")
 
     data = {
         "timestamp": current,
@@ -42,9 +39,13 @@ while current < end_date:
         "status": random.choice(["calm", "neutral", "stressed"])
     }
 
-    readings_ref.document(doc_id).set(data)
+    readings_ref \
+        .document(day_doc_id) \
+        .collection("times") \
+        .document(time_doc_id) \
+        .set(data)
 
-    print("Created:", doc_id)
+    print(f"Created: {day_doc_id}/times/{time_doc_id}")
 
     current += timedelta(minutes=interval_minutes)
 

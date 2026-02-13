@@ -10,7 +10,8 @@ import {
 } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
-import ReportsCharts from "../components/ReportsCharts";
+import ReportGSRChart from "../components/ReportGSRChart";
+import ReportHeartbeatChart from "../components/ReportHeartbeatChart";
 
 export default function ReportDetailed() {
   const { id } = useParams(); // day id from URL
@@ -137,7 +138,10 @@ export default function ReportDetailed() {
           ))
         )}
       </div>
-      <ReportsCharts />
+      <div className="space-y-6">
+        <ReportHeartbeatChart />
+        <ReportGSRChart />
+      </div>
     </div>
   );
 }

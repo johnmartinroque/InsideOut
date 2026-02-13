@@ -1,21 +1,15 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  query,
-  orderBy,
-} from "firebase/firestore";
-import InputElderlyIDModal from "./modals/InputElderlyID";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 
 export default function ReadingsList() {
-  const [readings, setReadings] = useState([]);
+  const [days, setDays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showModal, setShowModal] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +20,7 @@ export default function ReadingsList() {
           return;
         }
 
-        // 1️⃣ Get companion document
+        // Get companion doc
         const companionRef = doc(db, "companion", user.uid);
         const companionSnap = await getDoc(companionRef);
 
@@ -35,28 +29,26 @@ export default function ReadingsList() {
           return;
         }
 
-        const companionData = companionSnap.data();
-        const elderlyID = companionData.elderlyID;
+        const elderlyID = companionSnap.data().elderlyID;
 
         if (!elderlyID) {
-          // Show the modal if no elderly assigned
-          setShowModal(true);
-          setError(""); // clear error text
+          setError("No elderly assigned to this account.");
           return;
         }
 
-        // 2️⃣ Fetch readings
-        const readingsRef = collection(db, "elderly", elderlyID, "readings");
-        const q = query(readingsRef, orderBy("timestamp", "desc"));
+        // Fetch day documents
+        const daysRef = collection(db, "elderly", elderlyID, "readings");
+        const daysSnap = await getDocs(daysRef);
 
-        const snapshot = await getDocs(q);
-
-        const list = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
+        const list = daysSnap.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
         }));
 
-        setReadings(list);
+        // Sort newest first
+        list.sort((a, b) => b.id.localeCompare(a.id));
+
+        setDays(list);
       } catch (err) {
         console.error(err);
         setError("Failed to fetch readings");
@@ -77,36 +69,28 @@ export default function ReadingsList() {
 
   return (
     <div className="p-6">
-      {/* Modal for entering elderly ID */}
-      <InputElderlyIDModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-      />
-
       {error && <p className="p-4 text-red-500">{error}</p>}
 
-      <h2 className="text-xl font-bold mb-4">Elderly Readings</h2>
+      <h2 className="text-xl font-bold mb-4">Daily Reports</h2>
 
-      {readings.length === 0 ? (
+      {days.length === 0 ? (
         <p>No readings found.</p>
       ) : (
         <div className="space-y-3">
-          {readings.map((r) => (
-            <div key={r.id} className="border rounded-lg p-4 shadow bg-white">
+          {days.map((d) => (
+            <div
+              key={d.id}
+              onClick={() => navigate(`/report/${d.id}`)}
+              className="border rounded-lg p-4 shadow bg-white cursor-pointer hover:shadow-lg transition"
+            >
+              <p className="font-semibold text-lg">{d.id}</p>
+
               <p>
-                <strong>ID:</strong> {r.id}
+                <strong>Average HR:</strong> {d.averageHB ?? "--"}
               </p>
+
               <p>
-                <strong>Heart Rate:</strong> {r.heart_rate}
-              </p>
-              <p>
-                <strong>GSR:</strong> {r.gsr}
-              </p>
-              <p>
-                <strong>Status:</strong> {r.status}
-              </p>
-              <p className="text-sm text-gray-500">
-                {r.timestamp?.toDate().toLocaleString()}
+                <strong>Average GSR:</strong> {d.averageGSR ?? "--"}
               </p>
             </div>
           ))}

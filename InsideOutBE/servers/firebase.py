@@ -10,7 +10,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # ---------------- CONFIG ----------------
-user_id = "N650pQK08tF0f5bZaTGo"
+user_id = "QV6m7zrKxSP4PnMjcVab"
 start_date = datetime(2026, 2, 12, 0, 0)
 days = 2
 interval_minutes = 60

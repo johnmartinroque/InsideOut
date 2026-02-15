@@ -63,7 +63,7 @@ function App() {
       <div className="p-4">
         <Spinner />
       </div>
-    ); // prevent flicker while checking auth
+    );
 
   return (
     <div className="App min-h-screen flex flex-col bg-gray-100">

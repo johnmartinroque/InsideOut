@@ -61,4 +61,4 @@ def status():
 if __name__ == "__main__":
     print("🚀 GSR & Heartbeat Simulator Running (Terminal Output Only)...")
     threading.Thread(target=simulate_sensor_data, daemon=True).start()
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)

@@ -4,6 +4,7 @@ import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import DateTime from "../components/DateTime";
 import CurrentStatus from "../components/CurrentStatus";
+import FinishAccountSetup from "../components/modals/FinishAccountSetup";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -35,7 +36,7 @@ function Home() {
     <div>
       <h1>Welcome to InsideOut</h1>
       {/* Show modal if elderlyID missing */}
-      <InputElderlyIDModal
+      <FinishAccountSetup
         isOpen={showModal}
         onClose={() => setShowModal(false)}
       />

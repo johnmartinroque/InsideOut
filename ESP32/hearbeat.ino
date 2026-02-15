@@ -64,3 +64,8 @@ void loop()
   if (irValue < 50000)
     Serial.println("No finger detected");
 }
+
+
+
+https://www.instructables.com/How-to-Build-a-DIY-WiFi-Smart-Oximeter-Using-MAX30/
+https://github.com/Probots-Electronics/Wifi-Oximiter-using-MAX30102-and-ESP32/blob/main/WiFi_Oximeter_using_MAX30102_and_ESP32/WiFi_Oximeter_using_MAX30102_and_ESP32.ino

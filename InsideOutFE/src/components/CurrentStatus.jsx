@@ -9,7 +9,7 @@ export default function CurrentStatus() {
 
   const fetchStatus = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/status");
+      const res = await fetch(`${import.meta.env.VITE_ESP32_URL}/status`);
       const json = await res.json();
       setData(json);
       setLoading(false);

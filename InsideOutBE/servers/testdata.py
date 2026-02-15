@@ -3,8 +3,12 @@ import random
 import threading
 import time
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app, origins=["http://localhost:5173"])
+
 
 SEND_INTERVAL = 2  # seconds
 SERVER_URL = "http://127.0.0.1:5000/data" 

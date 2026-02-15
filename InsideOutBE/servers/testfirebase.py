@@ -4,6 +4,8 @@ import time
 from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
+from zoneinfo import ZoneInfo
+
 
 # ---------------- FIREBASE INIT ----------------
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -70,7 +72,7 @@ def process_averages():
 
             buffer.clear()
 
-        now = datetime.now()
+        now = datetime.now(ZoneInfo("Asia/Manila"))
 
         # Parent doc ID → 12feb
         day_doc_id = f"{now.day}{months[now.month-1]}"

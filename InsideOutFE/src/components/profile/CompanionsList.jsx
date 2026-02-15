@@ -52,9 +52,9 @@ export default function CompanionsList() {
 
   if (loading)
     return (
-      <p className="p-4">
+      <div className="p-4">
         <Spinner />
-      </p>
+      </div>
     );
   if (error) return <p className="p-4 text-red-500">{error}</p>;
   if (companions.length === 0)

@@ -62,9 +62,9 @@ export default function ReadingsList() {
 
   if (loading)
     return (
-      <p className="p-4">
+      <div className="p-4">
         <Spinner />
-      </p>
+      </div>
     );
 
   return (

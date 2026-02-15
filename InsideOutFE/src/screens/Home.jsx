@@ -3,6 +3,7 @@ import InputElderlyIDModal from "../components/modals/InputElderlyID";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import DateTime from "../components/DateTime";
+import CurrentStatus from "../components/CurrentStatus";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -39,6 +40,7 @@ function Home() {
         onClose={() => setShowModal(false)}
       />
       <DateTime />
+      <CurrentStatus />
     </div>
   );
 }

@@ -8,13 +8,14 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import ReportGSRChart from "../components/ReportGSRChart";
 import ReportHeartbeatChart from "../components/ReportHeartbeatChart";
 
 export default function ReportDetailed() {
   const { id } = useParams(); // day id from URL
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [avg, setAvg] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -96,7 +97,13 @@ export default function ReportDetailed() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* HEADER */}
+      <button
+        onClick={() => navigate("/reports")}
+        type="button"
+        class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5"
+      >
+        Purple to Blue
+      </button>
       <div className="border rounded-xl p-5 shadow bg-white">
         <h1 className="text-2xl font-bold mb-3">Report — {id}</h1>
 

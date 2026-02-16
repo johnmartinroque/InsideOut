@@ -34,21 +34,32 @@ export default function CurrentStatus() {
         {loading ? (
           <p className="text-gray-500 animate-pulse">Loading data...</p>
         ) : (
-          <div className="space-y-4">
-            <div className="bg-blue-50 rounded-xl p-4">
-              <p className="text-sm text-gray-500">GSR Value</p>
-              <p className="text-2xl font-semibold text-blue-600">
-                {data.gsr_value ?? "--"} μS
-              </p>
+          <>
+            {/* ESP32 Connection Status */}
+            <div
+              className={`mb-4 font-semibold ${data.esp32_connected ? "text-green-600" : "text-red-600"}`}
+            >
+              {data.esp32_connected
+                ? "📡 ESP32 Connected"
+                : "⚠️ ESP32 Disconnected"}
             </div>
 
-            <div className="bg-red-50 rounded-xl p-4">
-              <p className="text-sm text-gray-500">Heartbeat</p>
-              <p className="text-2xl font-semibold text-red-600">
-                {data.heartbeat ?? "--"} bpm
-              </p>
+            <div className="space-y-4">
+              <div className="bg-blue-50 rounded-xl p-4">
+                <p className="text-sm text-gray-500">GSR Value</p>
+                <p className="text-2xl font-semibold text-blue-600">
+                  {data.gsr_value ?? "--"} μS
+                </p>
+              </div>
+
+              <div className="bg-red-50 rounded-xl p-4">
+                <p className="text-sm text-gray-500">Heartbeat</p>
+                <p className="text-2xl font-semibold text-red-600">
+                  {data.heartbeat ?? "--"} bpm
+                </p>
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

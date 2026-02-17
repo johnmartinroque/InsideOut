@@ -25,6 +25,7 @@ import Spinner from "./components/Spinner";
 import "./index.css";
 import Reports from "./screens/Reports";
 import ReportDetailed from "./screens/ReportDetailed";
+import CameraFeed from "./screens/CameraFeed";
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -129,7 +130,7 @@ function App() {
                 path="/camera"
                 element={
                   <PrivateRoute>
-                    <Camera />
+                    <CameraFeed />
                   </PrivateRoute>
                 }
               />

@@ -3,6 +3,7 @@ from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
 from zoneinfo import ZoneInfo
+from flask_cors import CORS
 
 # ---------------- FIREBASE INIT ----------------
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -21,6 +22,8 @@ readings_ref = db.collection("elderly").document(USER_ID).collection("readings")
 
 # ---------------- APP ----------------
 app = Flask(__name__)
+CORS(app)
+
 
 latest_data = {"gsr": None, "bpm": None}
 gsr_values = []

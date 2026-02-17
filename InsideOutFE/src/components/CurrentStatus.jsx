@@ -1,67 +1,58 @@
-import { useEffect, useState } from "react";
+// CurrentStatus.jsx
+import React, { useEffect, useState } from "react";
+
+const ESP32_URL = import.meta.env.VITE_ESP32_URL; // from .env
 
 export default function CurrentStatus() {
-  const [data, setData] = useState({
-    gsr_value: null,
-    heartbeat: null,
-  });
+  const [data, setData] = useState({ gsr: "-", bpm: "-" });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchStatus = async () => {
+  // Fetch latest data
+  const fetchData = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_ESP32_URL}/status`);
+      const res = await fetch(`${ESP32_URL}/status`);
+      if (!res.ok) throw new Error("Failed to fetch ESP32 data");
       const json = await res.json();
-      setData(json);
+      setData({
+        gsr: json.gsr ?? "-",
+        bpm: json.bpm ?? "-",
+      });
       setLoading(false);
+      setError(null);
     } catch (err) {
-      console.error("Failed to fetch status:", err);
+      setError(err.message);
+      setLoading(false);
     }
   };
 
+  // Poll every 2 seconds
   useEffect(() => {
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 2000); // refresh every 2s
+    fetchData();
+    const interval = setInterval(fetchData, 2000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-[300px]">
-      <div className="bg-white shadow-xl rounded-2xl p-6 w-80 text-center border">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">
-          Current Sensor Status
-        </h2>
+    <div className="p-4 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4 text-center">
+      <h2 className="text-xl font-bold text-gray-800">ESP32 Sensor Status</h2>
 
-        {loading ? (
-          <p className="text-gray-500 animate-pulse">Loading data...</p>
-        ) : (
-          <>
-            {/* ESP32 Connection Status */}
-            <div
-              className={`mb-4 font-semibold ${data.esp32_connected ? "text-green-600" : "text-red-600"}`}
-            >
-              {data.esp32_connected
-                ? "📡 ESP32 Connected"
-                : "⚠️ ESP32 Disconnected"}
-            </div>
-
-            <div className="space-y-4">
-              <div className="bg-blue-50 rounded-xl p-4">
-                <p className="text-sm text-gray-500">GSR Value</p>
-                <p className="text-2xl font-semibold text-blue-600">
-                  {data.gsr_value ?? "--"} μS
-                </p>
-              </div>
-
-              <div className="bg-red-50 rounded-xl p-4">
-                <p className="text-sm text-gray-500">Heartbeat</p>
-                <p className="text-2xl font-semibold text-red-600">
-                  {data.heartbeat ?? "--"} bpm
-                </p>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+      {loading ? (
+        <p className="text-gray-500">Loading...</p>
+      ) : error ? (
+        <p className="text-red-500">Error: {error}</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-blue-100 p-4 rounded-lg">
+            <p className="text-gray-700 font-semibold">GSR</p>
+            <p className="text-2xl font-bold">{data.gsr}</p>
+          </div>
+          <div className="bg-green-100 p-4 rounded-lg">
+            <p className="text-gray-700 font-semibold">BPM</p>
+            <p className="text-2xl font-bold">{data.bpm}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

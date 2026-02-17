@@ -3,9 +3,9 @@
 
 #define SENSOR_PIN 0
 
-const char* ssid = "HUAWEI-2.4G-eAX8";
-const char* password = "pWfm5Aba";
-const char* serverName = "http://192.168.100.33:5001/data";
+const char* ssid = "";
+const char* password = "";
+const char* serverName = "http://<ip address>/data";
 
 const float VCC = 3.3;
 const int ADC_MAX = 4095;

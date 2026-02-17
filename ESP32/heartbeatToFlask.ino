@@ -6,11 +6,11 @@
 MAX30105 particleSensor;
 
 // WIFI
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "HUAWEI-2.4G-eAX8";
+const char* password = "pWfm5Aba";
 
 // Flask server
-const char* host = ""; // ← CHANGE to your PC IP
+const char* host = "192.168.100.33"; // ← CHANGE to your PC IP
 const int port = 5000;
 
 WiFiClient client;

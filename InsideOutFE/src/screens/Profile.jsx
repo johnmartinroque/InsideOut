@@ -1,6 +1,4 @@
 import React from "react";
-import ElderlyInfo from "../components/profile/ElderlyInfo";
-import CompanionInfo from "../components/profile/CompanionInfo";
 import CompanionsList from "../components/profile/CompanionsList";
 import ElderlyInformation from "../components/profile/ElderlyInformation";
 
@@ -17,8 +15,6 @@ function Profile() {
 
       {/* Info Cards */}
       <div className="grid md:grid-cols-2 gap-10 w-full max-w-5xl">
-        <CompanionInfo />
-        <ElderlyInfo />
         <CompanionsList />
         <ElderlyInformation />
       </div>

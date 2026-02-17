@@ -41,7 +41,7 @@ function LandingPage() {
 
       <div className="max-w-6xl mx-auto px-6 pb-20">
         <div className="grid gap-8 md:grid-cols-3 w-full">
-          <div className="p-8 bg-gray-50 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div className="p-8 bg-gray-50 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow text-center">
             <div className="text-blue-600 mb-4 text-3xl">👁️</div>
             <h3 className="text-xl font-bold mb-3 text-gray-800">
               Emotion Monitoring
@@ -52,7 +52,7 @@ function LandingPage() {
             </p>
           </div>
 
-          <div className="p-8 bg-gray-50 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div className="p-8 bg-gray-50 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow text-center">
             <div className="text-green-600 mb-4 text-3xl">🎵</div>
             <h3 className="text-xl font-bold mb-3 text-gray-800">
               Relaxing Music
@@ -63,7 +63,7 @@ function LandingPage() {
             </p>
           </div>
 
-          <div className="p-8 bg-gray-50 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div className="p-8 bg-gray-50 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow text-center">
             <div className="text-purple-600 mb-4 text-3xl">📊</div>
             <h3 className="text-xl font-bold mb-3 text-gray-800">
               Unified Dashboard

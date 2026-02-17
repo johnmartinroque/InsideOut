@@ -29,7 +29,7 @@ export default function CompanionsList() {
         const q = query(
           companionsRef,
           where("elderlyID", "==", elderlyID),
-          orderBy("createdAt", "asc"), // optional: order by registration time
+          orderBy("createdAt", "asc"),
         );
 
         const snapshot = await getDocs(q);
@@ -67,7 +67,13 @@ export default function CompanionsList() {
         {companions.map((c) => (
           <div key={c.id} className="border rounded-lg p-4 shadow bg-white">
             <p>
+              <strong>Full Name:</strong> {c.fullName}
+            </p>
+            <p>
               <strong>Email:</strong> {c.email}
+            </p>
+            <p>
+              <strong>Phone Number:</strong> {c.phoneNumber}
             </p>
             <p>
               <strong>Companion ID:</strong> {c.companionID}

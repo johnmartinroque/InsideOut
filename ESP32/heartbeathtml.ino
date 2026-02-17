@@ -3,8 +3,8 @@
 #include "MAX30105.h"
 #include "heartRate.h"
 
-const char* ssid = "HUAWEI-2.4G-eAX8";
-const char* password = "pWfm5Aba";
+const char* ssid = "";
+const char* password = "";
 
 WiFiServer server(80);
 

@@ -15,7 +15,7 @@ db = firestore.client()
 
 # ---------------- CONFIG ----------------
 DOC_ID = "QV6m7zrKxSP4PnMjcVab"
-INTERVAL = 300  # 10 minutes
+INTERVAL = 600  # 10 minutes
 months = ["jan","feb","mar","apr","may","jun",
           "jul","aug","sep","oct","nov","dec"]
 

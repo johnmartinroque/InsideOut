@@ -41,8 +41,11 @@ function Home() {
    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
       <div className="max-w-7xl mx-auto space-y-8">
         
-        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-          Welcome to InsideOut
+        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight text-center">
+          Welcome to Inside
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+              Out
+            </span>
         </h1>
 
         <FinishAccountSetup
@@ -51,13 +54,13 @@ function Home() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex justify-center items-start">
             <DateTime />
           </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex justify-center items-start">
             <CurrentStatus />
           </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 md:col-span-2 lg:col-span-1 flex justify-center items-start">
             <ESP32Detector />
           </div>
         </div>

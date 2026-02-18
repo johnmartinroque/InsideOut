@@ -1,72 +1,79 @@
-import os
+from flask import Flask, request, jsonify
 import joblib
 import numpy as np
-from flask import Flask, request, jsonify
 from flask_cors import CORS
+from datetime import datetime
 
-# ---------------- INIT ----------------
 app = Flask(__name__)
 CORS(app)
 
-BASE_DIR = os.path.dirname(__file__)
+# ======================================================
+# LOAD MODEL FILES
+# ======================================================
+MODEL_PATH = "../models/gsrEmotion/"
 
-emotion_model_path = os.path.join(BASE_DIR, "..", "models", "gsrEmotion", "gsr_emotion_model.pkl")
-mwl_model_path = os.path.join(BASE_DIR, "..", "models", "gsrMWL", "gsrMWL_model.pkl")
+model = joblib.load(MODEL_PATH + "model.pkl")
+scaler = joblib.load(MODEL_PATH + "scaler.pkl")
+encoder = joblib.load(MODEL_PATH + "label_encoder.pkl")
 
-# ---------------- LOAD MODELS ----------------
-try:
-    emotion_model = joblib.load(emotion_model_path)
-    print("✅ Emotion model loaded")
-except Exception as e:
-    print("❌ Failed to load Emotion model:", e)
-    exit()
+print("✅ Emotion prediction server ready")
 
-try:
-    mwl_model = joblib.load(mwl_model_path)
-    print("✅ MWL model loaded")
-except Exception as e:
-    print("❌ Failed to load MWL model:", e)
-    exit()
-
-# ---------------- ROUTES ----------------
+# ======================================================
+# ROUTES
+# ======================================================
 
 @app.route("/")
 def home():
-    return "GSR Prediction Server Running"
+    return jsonify({"status": "Server running"})
 
-@app.route("/status")
-def status():
+# ------------------------------------------------------
+# PREDICT
+# ------------------------------------------------------
+@app.route("/predict", methods=["POST"])
+def predict():
+
+    data = request.json
+
+    if not data or "gsr" not in data:
+        return jsonify({"error": "Missing GSR value"}), 400
+
+    gsr_value = float(data["gsr"])
+
+    # prepare input
+    X = np.array([[gsr_value]])
+    X = scaler.transform(X)
+
+    # predict
+    pred = model.predict(X)[0]
+    emotion = encoder.inverse_transform([pred])[0]
+
+    # confidence
+    if hasattr(model, "predict_proba"):
+        prob = model.predict_proba(X)[0]
+        confidence = float(np.max(prob))
+    else:
+        confidence = None
+
+    # ==================================================
+    # PRINT RESULT IN SERVER TERMINAL
+    # ==================================================
+    timestamp = datetime.now().strftime("%H:%M:%S")
+
+    print(
+        f"[{timestamp}] GSR={gsr_value} → Emotion={emotion}"
+        + (f" (Confidence={confidence:.2f})" if confidence else "")
+    )
+
+    # response
     return jsonify({
-        "server": "running",
-        "models_loaded": True
+        "gsr": gsr_value,
+        "emotion": emotion,
+        "confidence": confidence
     })
 
 
-buffer = []
-WINDOW_SIZE = 50
-
-
-@app.route("/predict", methods=["POST"])
-def predict():
-    try:
-        data = request.json
-        gsr = float(data["gsr"])
-
-        sample = np.array([[gsr]])
-
-        emotion = emotion_model.predict(sample)[0]
-        mwl = mwl_model.predict(sample)[0]
-
-        return jsonify({
-            "gsr": gsr,
-            "emotion_state": str(emotion),
-            "mental_workload": str(mwl)
-        })
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
-# ---------------- RUN ----------------
+# ======================================================
+# RUN
+# ======================================================
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5002, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

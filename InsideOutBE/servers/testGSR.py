@@ -1,30 +1,29 @@
-import time
 import requests
 import random
+import time
 
-# -------- CONFIG --------
-URL = "http://127.0.0.1:5002/predict"   # change if server runs elsewhere
-INTERVAL = 5  # seconds
+# ==============================
+# CONFIG
+# ==============================
+URL = "http://127.0.0.1:5000/predict"
+INTERVAL = 2   # seconds
 
-print("Starting GSR test sender...")
+print("Sending random GSR data...\n")
 
 while True:
     try:
-        # generate fake GSR value (simulate sensor)
+        # generate random GSR value
         gsr_value = round(random.uniform(0.1, 5.0), 3)
 
         payload = {"gsr": gsr_value}
 
-        response = requests.post(URL, json=payload)
+        # send request
+        requests.post(URL, json=payload)
 
-        print("Sent:", payload)
-
-        if response.status_code == 200:
-            print("Response:", response.json())
-        else:
-            print("Server error:", response.text)
+        # print ONLY what is sent
+        print(f"Sent GSR: {gsr_value}")
 
     except Exception as e:
-        print("Error:", e)
+        print("Connection error:", e)
 
     time.sleep(INTERVAL)

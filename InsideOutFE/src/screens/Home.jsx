@@ -38,21 +38,49 @@ function Home() {
   }, []);
 
   return (
-    <div>
-      <h1>Welcome to InsideOut</h1>
-      {/* Show modal if elderlyID missing */}
-      <FinishAccountSetup
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-      />
+   <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
+          Welcome to InsideOut
+        </h1>
 
-      <DateTime />
-      <CurrentStatus />
-      <ESP32Detector />
-      <CurrentBPM />
-      <CurrentBPMChart />
-      <CurrentEDA />
-      <CurrentEDAChart />
+        <FinishAccountSetup
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <DateTime />
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <CurrentStatus />
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <ESP32Detector />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <CurrentBPM />
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <CurrentEDA />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <CurrentBPMChart />
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <CurrentEDAChart />
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }

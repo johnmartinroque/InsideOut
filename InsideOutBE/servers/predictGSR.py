@@ -41,6 +41,11 @@ def status():
         "models_loaded": True
     })
 
+
+buffer = []
+WINDOW_SIZE = 50
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:

@@ -27,7 +27,15 @@ function DateTime() {
     return () => clearInterval(interval);
   }, []);
 
-  return <div className="text-lg font-semibold">{dateTime}</div>;
-}
+    return (
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center px-4 py-2 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
+            <p className="text-lg font-bold text-slate-700 tracking-tight tabular-nums">
+              {dateTime}
+            </p>
+          </div>
+        </div>
+      );
+    }
 
 export default DateTime;

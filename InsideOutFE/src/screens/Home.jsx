@@ -5,6 +5,11 @@ import { doc, getDoc } from "firebase/firestore";
 import DateTime from "../components/DateTime";
 import CurrentStatus from "../components/CurrentStatus";
 import FinishAccountSetup from "../components/modals/FinishAccountSetup";
+import CurrentBPM from "../components/esp32/CurrentBPM";
+import CurrentEDA from "../components/esp32/CurrentEDA";
+import CurrentBPMChart from "../components/esp32/CurrentBPMChart";
+import CurrentEDAChart from "../components/esp32/CurrentEDAChart";
+import ESP32Detector from "../components/esp32/ESP32Detector";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -40,8 +45,14 @@ function Home() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
       />
+
       <DateTime />
       <CurrentStatus />
+      <ESP32Detector />
+      <CurrentBPM />
+      <CurrentBPMChart />
+      <CurrentEDA />
+      <CurrentEDAChart />
     </div>
   );
 }

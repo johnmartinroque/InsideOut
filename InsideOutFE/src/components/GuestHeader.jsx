@@ -26,45 +26,72 @@ function GuestHeader() {
           </span>
         </Link>
 
-        {/* Menu */}
-        <div className={`max-lg:hidden lg:block ${menuOpen ? "block" : "hidden"}`}>
-          <ul className="lg:flex gap-x-6 max-lg:space-y-3 max-lg:fixed max-lg:bg-gray-800 max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-2xl max-lg:overflow-auto z-50">
-            <li className="max-lg:border-b max-lg:border-gray-700 max-lg:py-3 px-3">
+        {/* Menu & Mobile Dropdown */}
+        <div className={`${menuOpen ? "block" : "hidden"} lg:block max-lg:absolute max-lg:top-[70px] max-lg:right-4 z-50`}>
+          <ul className="lg:flex gap-x-6 max-lg:space-y-1 max-lg:bg-gray-800 max-lg:w-48 max-lg:p-2 max-lg:rounded-lg max-lg:shadow-xl max-lg:border max-lg:border-gray-700">
+            <li className="px-3">
               <Link
                 to="/"
-                className="hover:text-blue-400 block font-medium text-[15px] transition-colors"
+                className="hover:text-blue-400 block py-2 font-medium text-[15px] transition-colors"
+                onClick={() => setMenuOpen(false)}
               >
                 Home
               </Link>
             </li>
-            <li className="max-lg:border-b max-lg:border-gray-700 max-lg:py-3 px-3">
+            <li className="px-3">
               <Link
                 to="/about"
-                className="hover:text-blue-400 block font-medium text-[15px] transition-colors"
+                className="hover:text-blue-400 block py-2 font-medium text-[15px] transition-colors"
+                onClick={() => setMenuOpen(false)}
               >
                 About
               </Link>
             </li>
+
+            {/* Divider for mobile */}
+            <li className="lg:hidden border-b border-gray-700 my-1 mx-3"></li>
+
+            {/* Login Link - Uniform Style */}
+            <li className="lg:hidden px-3">
+              <button
+                className="w-full text-left py-2 font-medium text-[15px] text-gray-300 hover:text-blue-400 transition-colors"
+                onClick={() => { navigate("/login"); setMenuOpen(false); }}
+              >
+                Login
+              </button>
+            </li>
+
+            {/* Sign Up Link - Uniform Style but highlighted */}
+            <li className="lg:hidden px-3">
+              <button
+                className="w-full text-left py-2 font-medium text-[15px] text-blue-400 hover:text-blue-300 transition-colors"
+                onClick={() => { navigate("/register"); setMenuOpen(false); }}
+              >
+                Sign up
+              </button>
+            </li>
           </ul>
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center max-lg:ml-auto space-x-3">
-          <button
-            className="px-5 py-2 text-sm rounded-full font-medium text-white border border-gray-500 bg-transparent hover:bg-gray-700 hover:border-gray-400 transition-all"
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </button>
-          <button
-            className="px-5 py-2 text-sm rounded-full font-medium text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 shadow-sm transition-all"
-            onClick={() => navigate("/register")}
-          >
-            Sign up
-          </button>
+        {/* Desktop Buttons */}
+        <div className="flex items-center space-x-3">
+          <div className="max-lg:hidden flex items-center space-x-3">
+            <button
+              className="px-5 py-2 text-sm rounded-xl font-medium text-white bg-slate-700 hover:bg-slate-600 transition-all"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+            <button
+              className="px-5 py-2 text-sm rounded-xl font-medium text-white bg-blue-500 hover:bg-blue-600 transition-all"
+              onClick={() => navigate("/register")}
+            >
+              Sign up
+            </button>
+          </div>
 
           {/* Mobile toggle */}
-          <button onClick={handleToggle} className="lg:hidden cursor-pointer">
+          <button onClick={handleToggle} className="lg:hidden cursor-pointer text-white">
             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"

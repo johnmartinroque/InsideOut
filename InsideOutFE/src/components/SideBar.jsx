@@ -27,13 +27,13 @@ function SideBar({ isExpanded, setIsExpanded }) {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-screen transition-all duration-300 z-50 flex flex-col p-4 
-        ${
-          isExpanded
-            ? "w-64 bg-gray-800 shadow-2xl text-white"
-            : "w-20 bg-gray-800 shadow-xl text-gray-300 max-[426px]:w-12 max-[426px]:bg-transparent max-[426px]:shadow-none"
-        }`}
-    >
+    className={`fixed top-0 left-0 h-full transition-all duration-300 z-50 flex flex-col p-4 
+      ${
+        isExpanded
+          ? "w-64 bg-gray-800 shadow-2xl text-white"
+          : "w-20 bg-gray-800 shadow-xl text-gray-300 max-[426px]:w-12 max-[426px]:bg-transparent max-[426px]:shadow-none"
+      }`}
+  >
       {/* Header: Logo and Toggle Arrow */}
       <div className="flex items-center justify-between mb-6">
         {isExpanded && (

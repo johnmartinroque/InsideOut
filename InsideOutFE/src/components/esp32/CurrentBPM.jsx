@@ -1,30 +1,41 @@
 import { useEffect, useState } from "react";
 
-export default function CurrentBPM() {
-  const [bpm, setBpm] = useState(72);
-  const [emotion, setEmotion] = useState("Neutral");
+const API_URL = "http://127.0.0.1:5000/latest";
 
-  const getEmotion = (value) => {
-    if (value > 90) return "Anxious";
-    if (value > 75) return "Sad";
-    return "Neutral";
-  };
+export default function CurrentBPM() {
+  const [bpm, setBpm] = useState("-");
+  const [emotion, setEmotion] = useState("-");
+  const [loading, setLoading] = useState(true);
 
   const emotionStyles = {
+    Calm: "bg-blue-50 text-blue-600",
     Neutral: "bg-blue-50 text-blue-600",
+    Happy: "bg-green-50 text-green-600",
     Sad: "bg-yellow-50 text-yellow-600",
+    Stressed: "bg-red-50 text-red-600",
     Anxious: "bg-red-50 text-red-600",
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newBpm = Math.floor(Math.random() * 40) + 60;
-      setBpm(newBpm);
-      setEmotion(getEmotion(newBpm));
-    }, 2000);
+  const fetchLatest = async () => {
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("Failed to fetch data");
+      const data = await res.json();
+      setBpm(data.bpm ?? "-");
+      setEmotion(data.bpm_emotion?.label ?? "-");
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
+  useEffect(() => {
+    fetchLatest(); // fetch once immediately
+    const interval = setInterval(fetchLatest, 2000); // fetch every 2s
     return () => clearInterval(interval);
   }, []);
+
+  if (loading) return <div>Loading BPM...</div>;
 
   return (
     <div className="bg-white shadow rounded-2xl p-5 w-full max-w-sm">
@@ -36,7 +47,9 @@ export default function CurrentBPM() {
           <p className="text-3xl font-bold text-red-600">{bpm}</p>
         </div>
 
-        <div className={`p-4 rounded-xl text-center ${emotionStyles[emotion]}`}>
+        <div
+          className={`p-4 rounded-xl text-center ${emotionStyles[emotion] || "bg-gray-50 text-gray-600"}`}
+        >
           <p className="text-sm text-gray-500">Emotion</p>
           <p className="text-xl font-semibold">{emotion}</p>
         </div>

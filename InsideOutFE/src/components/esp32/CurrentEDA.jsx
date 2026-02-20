@@ -1,36 +1,44 @@
 import { useEffect, useState } from "react";
 
+const API_URL = "http://127.0.0.1:5000/latest";
+
 export default function CurrentEDA() {
-  const [eda, setEda] = useState(4.2);
-  const [workload, setWorkload] = useState("Low");
-  const [stress, setStress] = useState("Calm");
+  const [eda, setEda] = useState("-");
+  const [workload, setWorkload] = useState("-");
+  const [stress, setStress] = useState("-");
+  const [loading, setLoading] = useState(true);
+
+  const fetchLatest = async () => {
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("Failed to fetch data");
+      const data = await res.json();
+      setEda(data.gsr ?? "-");
+      setWorkload(data.mwl?.label ?? "-");
+      setStress(data.gsr_emotion?.label ?? "-");
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const val = Number((Math.random() * 5 + 2).toFixed(2));
-      setEda(val);
-
-      if (val > 5) {
-        setWorkload("High");
-        setStress("Stressed");
-      } else {
-        setWorkload("Low");
-        setStress("Calm");
-      }
-    }, 2000);
-
+    fetchLatest(); // fetch once immediately
+    const interval = setInterval(fetchLatest, 2000); // fetch every 2s
     return () => clearInterval(interval);
   }, []);
 
   const workloadStyle =
-    workload === "High"
+    workload === "High MWL"
       ? "bg-red-50 text-red-600"
       : "bg-green-50 text-green-600";
 
   const stressStyle =
-    stress === "Stressed"
+    stress === "Stressed" || stress === "Anxious"
       ? "bg-red-50 text-red-600"
       : "bg-blue-50 text-blue-600";
+
+  if (loading) return <div>Loading EDA...</div>;
 
   return (
     <div className="bg-white shadow rounded-2xl p-5 w-full max-w-sm">

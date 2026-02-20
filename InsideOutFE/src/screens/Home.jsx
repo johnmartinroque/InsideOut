@@ -38,14 +38,13 @@ function Home() {
   }, []);
 
   return (
-   <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
       <div className="max-w-7xl mx-auto space-y-8">
-        
         <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight text-center">
           Welcome to Inside
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
-              Out
-            </span>
+            Out
+          </span>
         </h1>
 
         <FinishAccountSetup
@@ -82,7 +81,6 @@ function Home() {
             <CurrentEDAChart />
           </div>
         </div>
-
       </div>
     </div>
   );

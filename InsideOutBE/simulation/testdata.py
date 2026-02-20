@@ -6,7 +6,7 @@ import time
 # CONFIG
 # ==============================
 URL = "http://127.0.0.1:5000/predict/all"
-INTERVAL = 2   # seconds
+INTERVAL = 10   # seconds
 
 print("Sending random GSR + BPM data...\n")
 

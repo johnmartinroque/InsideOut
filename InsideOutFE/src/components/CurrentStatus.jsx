@@ -1,58 +1,55 @@
-// CurrentStatus.jsx
 import React, { useEffect, useState } from "react";
 
-const ESP32_URL = import.meta.env.VITE_ESP32_URL; // from .env
+const API_URL = "http://127.0.0.1:5000/latest";
 
 export default function CurrentStatus() {
-  const [data, setData] = useState({ gsr: "-", bpm: "-" });
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch latest data
   const fetchData = async () => {
     try {
-      const res = await fetch(`${ESP32_URL}/status`);
-      if (!res.ok) throw new Error("Failed to fetch ESP32 data");
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("Failed to fetch data");
       const json = await res.json();
-      setData({
-        gsr: json.gsr ?? "-",
-        bpm: json.bpm ?? "-",
-      });
+      setData(json);
       setLoading(false);
-      setError(null);
     } catch (err) {
       setError(err.message);
       setLoading(false);
     }
   };
 
-  // Poll every 2 seconds
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 2000);
+    const interval = setInterval(fetchData, 5000); // fetch every 5s
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <div className="p-4 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4 text-center">
-      <h2 className="text-xl font-bold text-gray-800">ESP32 Sensor Status</h2>
+  if (loading) return <div>Loading current status...</div>;
+  if (error) return <div style={{ color: "red" }}>Error: {error}</div>;
+  if (!data) return <div>No data available</div>;
 
-      {loading ? (
-        <p className="text-gray-500">Loading...</p>
-      ) : error ? (
-        <p className="text-red-500">Error: {error}</p>
-      ) : (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-blue-100 p-4 rounded-lg">
-            <p className="text-gray-700 font-semibold">GSR</p>
-            <p className="text-2xl font-bold">{data.gsr}</p>
-          </div>
-          <div className="bg-green-100 p-4 rounded-lg">
-            <p className="text-gray-700 font-semibold">BPM</p>
-            <p className="text-2xl font-bold">{data.bpm}</p>
-          </div>
-        </div>
-      )}
+  return (
+    <div style={{ fontFamily: "sans-serif", lineHeight: 1.6 }}>
+      <h2>Current Status</h2>
+      <div>
+        <strong>GSR:</strong> {data.gsr}
+      </div>
+      <div>
+        <strong>BPM:</strong> {data.bpm}
+      </div>
+      <div>
+        <strong>GSR Emotion:</strong> {data.gsr_emotion.label}(
+        {data.gsr_emotion.confidence ?? "N/A"}%)
+      </div>
+      <div>
+        <strong>MWL:</strong> {data.mwl.label}({data.mwl.confidence ?? "N/A"}%)
+      </div>
+      <div>
+        <strong>BPM Emotion:</strong> {data.bpm_emotion.label}(
+        {data.bpm_emotion.confidence ?? "N/A"}%)
+      </div>
     </div>
   );
 }

@@ -30,11 +30,21 @@ bpm_encoder = joblib.load(BPM_PATH + "label_encoder.pkl")
 
 print("✅ Emotion + MWL + BPM prediction server ready")
 
+# Store the latest prediction for frontend
+latest_prediction = {
+    "gsr": None,
+    "bpm": None,
+    "gsr_emotion": {"label": None, "confidence": None},
+    "mwl": {"label": None, "confidence": None},
+    "bpm_emotion": {"label": None, "confidence": None}
+}
+
 # ======================================================
-# /predict/all endpoint
+# /predict/all endpoint (POST)
 # ======================================================
 @app.route("/predict/all", methods=["POST"])
 def predict_all():
+    global latest_prediction
     try:
         data = request.json
         if not data or "gsr" not in data or "bpm" not in data:
@@ -46,7 +56,6 @@ def predict_all():
         # ---------------- GSR Emotion ----------------
         X_emotion = np.array([[gsr_value]])
         X_scaled = emotion_scaler.transform(X_emotion)
-
         pred_val = emotion_model.predict(X_scaled)[0]
         emotion_label = emotion_encoder.inverse_transform([pred_val])[0]
 
@@ -68,7 +77,6 @@ def predict_all():
         # ---------------- BPM Emotion ----------------
         X_bpm = np.array([[bpm_value]])
         X_bpm_scaled = bpm_scaler.transform(X_bpm)
-
         bpm_pred = bpm_model.predict(X_bpm_scaled)[0]
         bpm_label = bpm_encoder.inverse_transform([bpm_pred])[0]
 
@@ -77,33 +85,34 @@ def predict_all():
             bpm_proba = bpm_model.predict_proba(X_bpm_scaled)[0]
             bpm_conf = round(max(bpm_proba)*100,1)
 
+        # ---------------- Save latest prediction ----------------
+        latest_prediction = {
+            "gsr": round(gsr_value, 3),
+            "bpm": int(bpm_value),
+            "gsr_emotion": {"label": emotion_label, "confidence": round(confidence_emotion,1) if confidence_emotion else None},
+            "mwl": {"label": mwl_label, "confidence": confidence_mwl},
+            "bpm_emotion": {"label": bpm_label, "confidence": bpm_conf}
+        }
+
         # ---------------- Print nicely ----------------
         print(f"GSR = {gsr_value:.3f} | BPM = {bpm_value}")
         print(f"GSR Emotion {emotion_label} ({round(confidence_emotion,1) if confidence_emotion else 'N/A'}%)")
         print(f"MWL {mwl_label} ({confidence_mwl if confidence_mwl else 'N/A'}%)")
         print(f"BPM Emotion {bpm_label} ({bpm_conf if bpm_conf else 'N/A'}%)\n")
 
-        # ---------------- Return JSON ----------------
-        return jsonify({
-            "gsr": gsr_value,
-            "bpm": bpm_value,
-            "gsr_emotion": {
-                "label": emotion_label,
-                "confidence": round(confidence_emotion,1) if confidence_emotion else None
-            },
-            "mwl": {
-                "label": mwl_label,
-                "confidence": confidence_mwl
-            },
-            "bpm_emotion": {
-                "label": bpm_label,
-                "confidence": bpm_conf
-            }
-        }), 200
+        return jsonify(latest_prediction), 200
 
     except Exception as e:
         print("⚠️ Server Error:\n", traceback.format_exc())
         return jsonify({"status":"error","message":str(e)}),500
+
+
+# ======================================================
+# /latest endpoint (GET)
+# ======================================================
+@app.route("/latest", methods=["GET"])
+def get_latest():
+    return jsonify(latest_prediction), 200
 
 
 # ======================================================

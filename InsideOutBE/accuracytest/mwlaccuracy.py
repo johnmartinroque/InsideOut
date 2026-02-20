@@ -1,205 +1,283 @@
 import os
 import pandas as pd
 import numpy as np
-
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
-
-from scipy.signal import find_peaks, savgol_filter
-from scipy.fft import fft
-
 import warnings
 warnings.filterwarnings('ignore')
 
+# Paths for GSR data
+high_path = "../datasets/gsr/High_MWL"
+low_path = "../datasets/gsr/Low_MWL"
 
-# =====================================================
-# PATH CONFIG
-# =====================================================
-BASE_PATH = os.path.join("..", "datasets", "gsr")
-HIGH_PATH = os.path.join(BASE_PATH, "High_MWL")
-LOW_PATH  = os.path.join(BASE_PATH, "Low_MWL")
-
-
-
-# =====================================================
-# FEATURE EXTRACTION
-# =====================================================
-def extract_gsr_features(df):
-    features = []
-
-    for col in df.columns:
-        data = df[col].dropna().values
-
-        if len(data) == 0:
-            features.extend([0]*20)
-            continue
-
-        # smooth signal
-        if len(data) >= 5:
-            data = savgol_filter(data, 5, 2)
-
-        # ----- stats -----
-        col_features = [
-            np.mean(data),
-            np.std(data),
-            np.min(data),
-            np.max(data),
-            np.median(data),
-            np.percentile(data, 25),
-            np.percentile(data, 75),
-            np.ptp(data),
-        ]
-
-        # ----- temporal -----
-        diffs = np.diff(data)
-        col_features.extend([
-            np.mean(np.abs(diffs)),
-            np.std(diffs),
-            np.max(np.abs(diffs)),
-            np.sqrt(np.mean(data**2))
-        ])
-
-        # ----- peaks -----
-        peaks, prop = find_peaks(data, height=np.mean(data))
-        heights = prop["peak_heights"] if "peak_heights" in prop else []
-
-        col_features.extend([
-            len(peaks),
-            np.mean(heights) if len(heights) else 0,
-            np.max(heights) if len(heights) else 0
-        ])
-
-        # ----- frequency -----
-        fft_vals = np.abs(fft(data))[:len(data)//2]
-        col_features.extend([
-            np.mean(fft_vals),
-            np.max(fft_vals)
-        ])
-
-        features.extend(col_features)
-
-    return features
-
-
-# =====================================================
-# LOAD DATA
-# =====================================================
-def load_data(high_path, low_path):
-
+def load_and_prepare_data(high_path, low_path):
+    """
+    Load GSR data from High_MWL_GSR and Low_MWL_GSR folders and prepare features/labels
+    """
     X, y = [], []
-
-    # ----- HIGH MWL -----
+    
+    # Load High MWL GSR files (p2h.csv to p25h.csv)
+    for i in range(2, 26):  # p2 to p25
+        filename = f"p{i}h.csv"
+        filepath = os.path.join(high_path, filename)
+        
+        if os.path.exists(filepath):
+            try:
+                # Read CSV, skip header rows if they contain text
+                df = pd.read_csv(filepath, header=None)
+                
+                # Remove non-numeric rows (like "Trial 3:3back,Trial 5:3back")
+                df = df.apply(pd.to_numeric, errors='coerce').dropna()
+                
+                if not df.empty:
+                    # For GSR data, we might want to use statistical features
+                    # instead of just flattening all data points
+                    features = extract_gsr_features(df)
+                    X.append(features)
+                    y.append(1)  # High MWL = 1
+                    print(f"Loaded High MWL GSR: {filename}, Features: {len(features)}")
+            except Exception as e:
+                print(f"Error loading {filepath}: {e}")
+    
+    # Load Low MWL GSR files (p2l.csv to p25l.csv)
     for i in range(2, 26):
-        file = os.path.join(high_path, f"p{i}h.csv")
-        if not os.path.exists(file):
-            continue
-
-        df = pd.read_csv(file, header=None)
-        df = df.apply(pd.to_numeric, errors="coerce").dropna()
-
-        if not df.empty:
-            X.append(extract_gsr_features(df))
-            y.append(1)
-            print("Loaded High:", file)
-
-    # ----- LOW MWL -----
-    for i in range(2, 26):
-        file = os.path.join(low_path, f"p{i}l.csv")
-        if not os.path.exists(file):
-            continue
-
-        df = pd.read_csv(file, header=None)
-        df = df.apply(pd.to_numeric, errors="coerce").dropna()
-
-        if not df.empty:
-            X.append(extract_gsr_features(df))
-            y.append(0)
-            print("Loaded Low:", file)
-
+        filename = f"p{i}l.csv"
+        filepath = os.path.join(low_path, filename)
+        
+        if os.path.exists(filepath):
+            try:
+                # Read CSV, skip header rows if they contain text
+                df = pd.read_csv(filepath, header=None)
+                
+                # Remove non-numeric rows
+                df = df.apply(pd.to_numeric, errors='coerce').dropna()
+                
+                if not df.empty:
+                    # Extract statistical features for GSR data
+                    features = extract_gsr_features(df)
+                    X.append(features)
+                    y.append(0)  # Low MWL = 0
+                    print(f"Loaded Low MWL GSR: {filename}, Features: {len(features)}")
+            except Exception as e:
+                print(f"Error loading {filepath}: {e}")
+    
     return np.array(X), np.array(y)
 
-
-# =====================================================
-# MODEL TESTING
-# =====================================================
-def evaluate_models(X, y):
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, stratify=y, random_state=42
-    )
-
-    scaler = StandardScaler()
-    X_train_s = scaler.fit_transform(X_train)
-    X_test_s  = scaler.transform(X_test)
-
-    models = {
-        "Logistic Regression": LogisticRegression(max_iter=2000),
-        "SVM": SVC(),
-        "Random Forest": RandomForestClassifier(n_estimators=200),
-        "Gradient Boosting": GradientBoostingClassifier(),
-        "KNN": KNeighborsClassifier(),
-        "Neural Network": MLPClassifier(max_iter=2000)
-    }
-
-    results = {}
-
-    print("\n================ RESULTS ================\n")
-
-    for name, model in models.items():
-
+def extract_gsr_features(df):
+    """
+    Extract meaningful features from GSR data
+    GSR data typically has multiple columns (different trials/channels)
+    """
+    features = []
+    
+    # Process each column separately
+    for col in df.columns:
+        column_data = df[col].dropna()
+        
+        if len(column_data) > 0:
+            # Basic statistical features
+            col_features = [
+                np.mean(column_data),      # Mean GSR
+                np.std(column_data),       # Standard deviation
+                np.min(column_data),       # Minimum value
+                np.max(column_data),       # Maximum value
+                np.median(column_data),    # Median
+                np.percentile(column_data, 25),  # 25th percentile
+                np.percentile(column_data, 75),  # 75th percentile
+                np.ptp(column_data),       # Peak-to-peak (range)
+            ]
+            
+            # Additional GSR-specific features
+            if len(column_data) > 1:
+                # Rate of change features
+                differences = np.diff(column_data)
+                col_features.extend([
+                    np.mean(np.abs(differences)),  # Mean absolute difference
+                    np.std(differences),           # Std of differences
+                    np.max(np.abs(differences)),   # Maximum absolute difference
+                ])
+            else:
+                col_features.extend([0, 0, 0])  # Pad with zeros if not enough data
+            
+            features.extend(col_features)
+    
+    # If we have multiple columns, also add cross-column features
+    if df.shape[1] > 1:
+        # Correlation between columns
         try:
-            if name in ["Logistic Regression","SVM","KNN","Neural Network"]:
-                model.fit(X_train_s, y_train)
-                pred = model.predict(X_test_s)
-                cv = cross_val_score(model, scaler.transform(X), y, cv=5)
+            correlation = df.corr().values[np.triu_indices(df.shape[1], k=1)]
+            features.extend(correlation)
+        except:
+            pass
+        
+        # Mean differences between columns
+        column_means = df.mean()
+        if len(column_means) > 1:
+            mean_differences = [column_means[i] - column_means[j] 
+                              for i in range(len(column_means)) 
+                              for j in range(i+1, len(column_means))]
+            features.extend(mean_differences)
+    
+    return features
+
+def evaluate_models(X, y):
+    """
+    Evaluate multiple machine learning models without saving them
+    """
+    # Split the data
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    
+    # Scale the features
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    
+    # Define models to evaluate
+    models = {
+        'Logistic Regression': LogisticRegression(random_state=42, max_iter=1000),
+        'SVM': SVC(random_state=42),
+        'Random Forest': RandomForestClassifier(random_state=42, n_estimators=100),
+        'Gradient Boosting': GradientBoostingClassifier(
+            random_state=42,
+            n_estimators=100,
+            max_depth=3,
+            learning_rate=0.1,
+            subsample=0.8
+        ),
+        'K-Nearest Neighbors': KNeighborsClassifier(n_neighbors=5),
+        'Neural Network': MLPClassifier(random_state=42, max_iter=1000, hidden_layer_sizes=(100, 50))
+    }
+    
+    results = {}
+    
+    print("Model Evaluation Results:")
+    print("=" * 60)
+    
+    for name, model in models.items():
+        try:
+            # Train and predict
+            if name in ['SVM', 'K-Nearest Neighbors', 'Neural Network', 'Logistic Regression']:
+                model.fit(X_train_scaled, y_train)
+                y_pred = model.predict(X_test_scaled)
+                
+                # Cross-validation with scaled data
+                cv_scores = cross_val_score(model, scaler.transform(X), y, cv=5)
             else:
                 model.fit(X_train, y_train)
-                pred = model.predict(X_test)
-                cv = cross_val_score(model, X, y, cv=5)
-
-            acc = accuracy_score(y_test, pred)
-
-            results[name] = (acc, cv.mean(), cv.std())
-
-            print(f"{name}")
-            print("Accuracy:", round(acc,4))
-            print("CV mean:", round(cv.mean(),4))
-            print("CV std:", round(cv.std(),4))
-            print()
-
+                y_pred = model.predict(X_test)
+                
+                # Cross-validation
+                cv_scores = cross_val_score(model, X, y, cv=5)
+            
+            # Calculate metrics
+            accuracy = accuracy_score(y_test, y_pred)
+            mean_cv_score = cv_scores.mean()
+            std_cv_score = cv_scores.std()
+            
+            results[name] = {
+                'accuracy': accuracy,
+                'mean_cv_score': mean_cv_score,
+                'std_cv_score': std_cv_score,
+                'cv_scores': cv_scores,
+                'model': model  # Store the trained model temporarily
+            }
+            
+            print(f"\n{name}:")
+            print(f"  Test Accuracy: {accuracy:.4f}")
+            print(f"  Cross-validation: {mean_cv_score:.4f} (+/- {std_cv_score * 2:.4f})")
+            
         except Exception as e:
-            print(name,"FAILED:",e)
+            print(f"\n{name} - Error: {e}")
+            results[name] = None
+    
+    return results, X_train, X_test, y_train, y_test, models
 
-    return results
+def print_detailed_results(results, X_test, y_test, models, X, y):
+    """
+    Print detailed results for the best performing model
+    """
+    print("\n" + "=" * 60)
+    print("DETAILED ANALYSIS")
+    print("=" * 60)
+    
+    # Find best model based on test accuracy
+    valid_results = [(name, result) for name, result in results.items() if result is not None]
+    if not valid_results:
+        print("No valid models to evaluate.")
+        return
+    
+    best_model_name, best_result = max(valid_results, key=lambda x: x[1]['accuracy'])
+    
+    print(f"\nBest Model: {best_model_name}")
+    print(f"Best Accuracy: {best_result['accuracy']:.4f}")
+    
+    # Print classification report for best model
+    best_model = models[best_model_name]
+    
+    # Create a new train/test split for consistency
+    X_train, X_test_new, y_train, y_test_new = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    
+    # Scale if needed
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test_new)
+    
+    if best_model_name in ['SVM', 'K-Nearest Neighbors', 'Neural Network', 'Logistic Regression']:
+        best_model.fit(X_train_scaled, y_train)
+        y_pred = best_model.predict(X_test_scaled)
+    else:
+        best_model.fit(X_train, y_train)
+        y_pred = best_model.predict(X_test_new)
+    
+    print(f"\nClassification Report for {best_model_name}:")
+    print(classification_report(y_test_new, y_pred, target_names=['Low MWL', 'High MWL']))
+    
+    print(f"Confusion Matrix for {best_model_name}:")
+    cm = confusion_matrix(y_test_new, y_pred)
+    print(cm)
 
-
-# =====================================================
-# MAIN
-# =====================================================
+# Main execution
 if __name__ == "__main__":
-
-    print("Loading data...\n")
-
-    X, y = load_data(HIGH_PATH, LOW_PATH)
-
-    print("\nDataset Summary")
-    print("Samples:", len(X))
-    print("High:", np.sum(y==1))
-    print("Low:", np.sum(y==0))
-    print("Feature length:", X.shape[1])
-
-    results = evaluate_models(X,y)
-
-    print("\n============= SUMMARY TABLE =============")
-    print(f"{'Model':<22} {'Acc':<8} {'CV Mean':<10} {'CV Std':<10}")
-    print("-"*55)
-
-    for k,v in results.items():
-        print(f"{k:<22} {v[0]:<8.4f} {v[1]:<10.4f} {v[2]:<10.4f}")
+    # Load data
+    print("Loading GSR data...")
+    X, y = load_and_prepare_data(high_path, low_path)
+    
+    if len(X) == 0:
+        print("No data loaded. Please check your file paths and data files.")
+        print(f"Expected folders: {high_path} and {low_path}")
+        print("Expected files: p2h.csv to p25h.csv for High MWL, p2l.csv to p25l.csv for Low MWL")
+    else:
+        print(f"\nData loaded successfully!")
+        print(f"Total samples: {len(X)}")
+        print(f"High MWL samples: {np.sum(y == 1)}")
+        print(f"Low MWL samples: {np.sum(y == 0)}")
+        print(f"Feature dimension: {X.shape[1]}")
+        
+        # Evaluate models without saving them
+        results, X_train, X_test, y_train, y_test, models = evaluate_models(X, y)
+        
+        # Print detailed results
+        print_detailed_results(results, X_test, y_test, models, X, y)
+        
+        # Summary table
+        print("\n" + "=" * 60)
+        print("SUMMARY TABLE")
+        print("=" * 60)
+        print(f"{'Model':<25} {'Test Accuracy':<15} {'CV Mean':<10} {'CV Std':<10}")
+        print("-" * 60)
+        
+        for name, result in results.items():
+            if result is not None:
+                print(f"{name:<25} {result['accuracy']:<15.4f} {result['mean_cv_score']:<10.4f} {result['std_cv_score']:<10.4f}")
+        
+        print(f"\nAll models were evaluated but not saved to disk.")

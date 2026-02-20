@@ -1,73 +1,104 @@
-import os
+# train_svm_heart_model.py
+
 import pandas as pd
+import numpy as np
+import os
 import joblib
 
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.svm import SVC
 
-# ----------------------------
-# Paths
-# ----------------------------
-DATA_PATH = "../datasets/heart_rate_emotion_dataset.csv"
+import warnings
+warnings.filterwarnings('ignore')
 
-BASE_MODEL_DIR = "../models"
-MODEL_DIR = os.path.join(BASE_MODEL_DIR, "heartbeatEmotion")
+# ============================================================
+# 1. LOAD DATA
+# ============================================================
+print("Loading dataset...")
+df = pd.read_csv("../datasets/heart_rate_emotion_dataset.csv")
 
-MODEL_PATH = os.path.join(MODEL_DIR, "svm_emotion_model.pkl")
-ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
+# remove unwanted emotions
+df = df[~df["Emotion"].isin(["fear", "disgust", "surprise", "angry"])]
 
-# create models/heartbeatEmotion folder if not exists
-os.makedirs(MODEL_DIR, exist_ok=True)
+print("\nClass distribution:")
+print(df["Emotion"].value_counts())
 
-# ----------------------------
-# Load Dataset
-# ----------------------------
-df = pd.read_csv(DATA_PATH)
-
-# ----------------------------
-# Remove unwanted emotions
-# ----------------------------
-exclude_emotions = ["surprise", "fear", "disgust"]
-df = df[~df["Emotion"].isin(exclude_emotions)]
-
-# ----------------------------
-# Features & Labels
-# ----------------------------
-X = df[["HeartRate"]]
-y = df["Emotion"]
+# ============================================================
+# 2. FEATURES & LABELS
+# ============================================================
+X = df[["HeartRate"]].values
+y = df["Emotion"].values
 
 # Encode labels
 encoder = LabelEncoder()
-y_encoded = encoder.fit_transform(y)
+y = encoder.fit_transform(y)
 
-# ----------------------------
-# Train-Test Split
-# ----------------------------
+# Split
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y_encoded, test_size=0.2, random_state=42
+    X, y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
 )
 
-# ----------------------------
-# Train SVM Model
-# ----------------------------
+# Scale
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# ============================================================
+# 3. MODEL
+# ============================================================
 model = SVC(kernel="rbf", probability=True)
+
+# ============================================================
+# 4. TRAIN
+# ============================================================
+print("\nTraining SVM model...")
 model.fit(X_train, y_train)
 
-# ----------------------------
-# Evaluate
-# ----------------------------
-predictions = model.predict(X_test)
-accuracy = accuracy_score(y_test, predictions)
+# ============================================================
+# 5. TEST
+# ============================================================
+preds = model.predict(X_test)
 
-print(f"\nSVM Accuracy: {accuracy * 100:.2f}%")
+acc = accuracy_score(y_test, preds)
+cv = cross_val_score(model, X, y, cv=5)
 
-# ----------------------------
-# Save Model + Encoder
-# ----------------------------
-joblib.dump(model, MODEL_PATH)
-joblib.dump(encoder, ENCODER_PATH)
+print("\n================================================")
+print("SVM MODEL RESULTS (HeartRate → Emotion)")
+print("================================================")
 
-print("\nModel saved to:", MODEL_PATH)
-print("Encoder saved to:", ENCODER_PATH)
+print("\nTest Accuracy:", round(acc,4))
+print("CV Mean:", round(np.mean(cv),4), "+/-", round(np.std(cv),4))
+
+print("\nClassification Report:\n", classification_report(y_test, preds))
+print("Confusion Matrix:\n", confusion_matrix(y_test, preds))
+
+# ============================================================
+# 6. SAVE MODEL
+# ============================================================
+save_dir = "../models/heartbeatEmotion"
+os.makedirs(save_dir, exist_ok=True)
+
+joblib.dump(model, f"{save_dir}/model.pkl")
+joblib.dump(scaler, f"{save_dir}/scaler.pkl")
+joblib.dump(encoder, f"{save_dir}/label_encoder.pkl")
+
+results = pd.DataFrame([{
+    "Model": "SVM RBF",
+    "Test Accuracy": acc,
+    "CV Mean": np.mean(cv),
+    "CV Std": np.std(cv)
+}])
+
+results.to_csv(f"{save_dir}/results.csv", index=False)
+
+print("\n✅ Model saved to:", save_dir)
+print("Saved files:")
+print(" - model.pkl")
+print(" - scaler.pkl")
+print(" - label_encoder.pkl")
+print(" - results.csv")

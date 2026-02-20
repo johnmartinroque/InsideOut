@@ -23,7 +23,7 @@ print("\nOriginal Dataset Size:", len(df))
 # ======================================
 # REMOVE UNWANTED EMOTIONS
 # ======================================
-remove_labels = ["fear", "disgust", "surprise"]
+remove_labels = ["fear", "disgust", "surprise", "angry"]
 df = df[~df["Emotion"].isin(remove_labels)]
 
 print("Filtered Dataset Size:", len(df))

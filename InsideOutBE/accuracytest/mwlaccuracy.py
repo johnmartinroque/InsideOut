@@ -16,114 +16,94 @@ warnings.filterwarnings('ignore')
 high_path = "../datasets/gsr/High_MWL"
 low_path = "../datasets/gsr/Low_MWL"
 
+# Lists of available files
+high_files = [2, 3, 5, 6, 10, 11, 12, 13, 16, 19, 20, 21, 23]
+low_files = [3, 4, 5, 6, 8, 10, 13, 14, 15, 16, 17, 18, 20, 22, 23, 24, 25]
+
 def load_and_prepare_data(high_path, low_path):
     """
     Load GSR data from High_MWL_GSR and Low_MWL_GSR folders and prepare features/labels
+    Only the first column of each CSV is used.
     """
     X, y = [], []
     
-    # Load High MWL GSR files (p2h.csv to p25h.csv)
-    for i in range(2, 26):  # p2 to p25
+    # Load High MWL GSR files
+    for i in high_files:
         filename = f"p{i}h.csv"
         filepath = os.path.join(high_path, filename)
         
         if os.path.exists(filepath):
             try:
-                # Read CSV, skip header rows if they contain text
                 df = pd.read_csv(filepath, header=None)
-                
-                # Remove non-numeric rows (like "Trial 3:3back,Trial 5:3back")
                 df = df.apply(pd.to_numeric, errors='coerce').dropna()
                 
                 if not df.empty:
-                    # For GSR data, we might want to use statistical features
-                    # instead of just flattening all data points
-                    features = extract_gsr_features(df)
+                    # Take only the first column
+                    first_col = df.iloc[:, 0]
+                    features = extract_gsr_features(first_col.to_frame())  # convert Series to DataFrame
                     X.append(features)
-                    y.append(1)  # High MWL = 1
+                    y.append(1)  # High MWL
                     print(f"Loaded High MWL GSR: {filename}, Features: {len(features)}")
             except Exception as e:
                 print(f"Error loading {filepath}: {e}")
     
-    # Load Low MWL GSR files (p2l.csv to p25l.csv)
-    for i in range(2, 26):
+    # Load Low MWL GSR files
+    for i in low_files:
         filename = f"p{i}l.csv"
         filepath = os.path.join(low_path, filename)
         
         if os.path.exists(filepath):
             try:
-                # Read CSV, skip header rows if they contain text
                 df = pd.read_csv(filepath, header=None)
-                
-                # Remove non-numeric rows
                 df = df.apply(pd.to_numeric, errors='coerce').dropna()
                 
                 if not df.empty:
-                    # Extract statistical features for GSR data
-                    features = extract_gsr_features(df)
+                    first_col = df.iloc[:, 0]
+                    features = extract_gsr_features(first_col.to_frame())
                     X.append(features)
-                    y.append(0)  # Low MWL = 0
+                    y.append(0)  # Low MWL
                     print(f"Loaded Low MWL GSR: {filename}, Features: {len(features)}")
             except Exception as e:
                 print(f"Error loading {filepath}: {e}")
     
     return np.array(X), np.array(y)
 
+
 def extract_gsr_features(df):
     """
-    Extract meaningful features from GSR data
-    GSR data typically has multiple columns (different trials/channels)
+    Extract features from GSR data.
+    Assumes df contains only one column (the first column from CSV)
     """
     features = []
     
-    # Process each column separately
     for col in df.columns:
         column_data = df[col].dropna()
         
         if len(column_data) > 0:
-            # Basic statistical features
             col_features = [
-                np.mean(column_data),      # Mean GSR
-                np.std(column_data),       # Standard deviation
-                np.min(column_data),       # Minimum value
-                np.max(column_data),       # Maximum value
-                np.median(column_data),    # Median
-                np.percentile(column_data, 25),  # 25th percentile
-                np.percentile(column_data, 75),  # 75th percentile
-                np.ptp(column_data),       # Peak-to-peak (range)
+                np.mean(column_data),
+                np.std(column_data),
+                np.min(column_data),
+                np.max(column_data),
+                np.median(column_data),
+                np.percentile(column_data, 25),
+                np.percentile(column_data, 75),
+                np.ptp(column_data),
             ]
             
-            # Additional GSR-specific features
             if len(column_data) > 1:
-                # Rate of change features
                 differences = np.diff(column_data)
                 col_features.extend([
-                    np.mean(np.abs(differences)),  # Mean absolute difference
-                    np.std(differences),           # Std of differences
-                    np.max(np.abs(differences)),   # Maximum absolute difference
+                    np.mean(np.abs(differences)),
+                    np.std(differences),
+                    np.max(np.abs(differences)),
                 ])
             else:
-                col_features.extend([0, 0, 0])  # Pad with zeros if not enough data
+                col_features.extend([0, 0, 0])
             
             features.extend(col_features)
     
-    # If we have multiple columns, also add cross-column features
-    if df.shape[1] > 1:
-        # Correlation between columns
-        try:
-            correlation = df.corr().values[np.triu_indices(df.shape[1], k=1)]
-            features.extend(correlation)
-        except:
-            pass
-        
-        # Mean differences between columns
-        column_means = df.mean()
-        if len(column_means) > 1:
-            mean_differences = [column_means[i] - column_means[j] 
-                              for i in range(len(column_means)) 
-                              for j in range(i+1, len(column_means))]
-            features.extend(mean_differences)
-    
+    # No cross-column features since we only use the first column
     return features
 
 def evaluate_models(X, y):

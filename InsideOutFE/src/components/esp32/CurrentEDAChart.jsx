@@ -1,4 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import {
   LineChart,
   Line,
@@ -8,52 +16,97 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { auth, db } from "../../firebase";
+import Spinner from "../Spinner";
 
 export default function CurrentEDAChart() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const arr = [];
-    for (let i = 0; i < 10; i++) {
-      arr.push({
-        time: `10:${i}0`,
-        eda: (Math.random() * 5 + 2).toFixed(2),
-      });
-    }
-    setData(arr);
+    const fetchData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return setError("User not logged in");
+
+        const companionSnap = await getDoc(doc(db, "companion", user.uid));
+        if (!companionSnap.exists()) return setError("Companion not found");
+
+        const elderlyID = companionSnap.data().elderlyID;
+
+        // --- Get today's date doc ID ---
+        const today = new Date();
+        const months = [
+          "jan",
+          "feb",
+          "mar",
+          "apr",
+          "may",
+          "jun",
+          "jul",
+          "aug",
+          "sep",
+          "oct",
+          "nov",
+          "dec",
+        ];
+        const dayDocId = `${today.getDate()}${months[today.getMonth()]}`;
+
+        const timesRef = collection(
+          db,
+          "elderly",
+          elderlyID,
+          "readings",
+          dayDocId,
+          "times",
+        );
+        const q = query(timesRef, orderBy("timestamp", "asc"));
+        const snap = await getDocs(q);
+
+        const list = snap.docs.map((d) => {
+          const t = d.data().timestamp?.toDate();
+          return {
+            time: t?.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            }),
+            eda: d.data().gsr,
+          };
+        });
+
+        setData(list);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load EDA chart");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  return (
-    <div className="h-[400px] w-full">
-      <h2 className="font-bold text-slate-700 mb-6 flex items-center gap-2">
-        <span className="w-2 h-2 bg-teal-500 rounded-full"></span>
-        EDA Chart
-      </h2>
+  if (loading) return <Spinner />;
+  if (error) return <p className="text-red-500">{error}</p>;
 
-      <ResponsiveContainer width="100%" height="90%">
-        <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-          <XAxis 
-            dataKey="time" 
-            axisLine={false} 
-            tickLine={false} 
-            tick={{ fill: '#64748b', fontSize: 12 }} 
-          />
-          <YAxis 
-            axisLine={false} 
-            tickLine={false} 
-            tick={{ fill: '#64748b', fontSize: 12 }} 
-          />
-          <Tooltip 
-            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="eda" 
-            stroke="#0d9488" 
-            strokeWidth={3} 
-            dot={{ r: 4, fill: '#0d9488', strokeWidth: 2, stroke: '#fff' }}
-            activeDot={{ r: 6 }}
+  return (
+    <div className="bg-white shadow rounded-xl p-5 h-[400px]">
+      <h2 className="font-bold mb-4">Current EDA</h2>
+
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="eda"
+            stroke="#0d9488"
+            strokeWidth={3}
+            name="EDA"
           />
         </LineChart>
       </ResponsiveContainer>

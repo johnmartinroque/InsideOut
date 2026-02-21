@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import Spinner from "./Spinner";
+import Spinner from "../components/Spinner";
 
 export default function ReadingsList() {
   const [days, setDays] = useState([]);

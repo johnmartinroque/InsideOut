@@ -24,7 +24,7 @@ export default function CurrentEDA() {
 
   useEffect(() => {
     fetchLatest(); // fetch once immediately
-    const interval = setInterval(fetchLatest, 500); // fetch every 2s
+    const interval = setInterval(fetchLatest, 2000); // fetch every 2s
     return () => clearInterval(interval);
   }, []);
 

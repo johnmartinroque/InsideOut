@@ -31,24 +31,46 @@ export default function CurrentStatus() {
   if (!data) return <div>No data available</div>;
 
   return (
-    <div style={{ fontFamily: "sans-serif", lineHeight: 1.6 }}>
-      <h2>Current Status</h2>
-      <div>
-        <strong>GSR:</strong> {data.gsr}
+    <div className="w-full space-y-4">
+      <h2 className="text-xl font-bold text-gray-800 tracking-tight">Current Status</h2>
+      
+      {/* Metrics Row - aayusin ko pag nakita ko na data na lumalabas*/}
+      <div className="grid grid-cols-2 gap-4 border-b border-gray-100 pb-4">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">GSR</span>
+          <span className="text-2xl font-mono text-gray-900">{data.gsr}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">BPM</span>
+          <span className="text-2xl font-mono text-gray-900">{data.bpm}</span>
+        </div>
       </div>
-      <div>
-        <strong>BPM:</strong> {data.bpm}
-      </div>
-      <div>
-        <strong>GSR Emotion:</strong> {data.gsr_emotion.label}(
-        {data.gsr_emotion.confidence ?? "N/A"}%)
-      </div>
-      <div>
-        <strong>MWL:</strong> {data.mwl.label}({data.mwl.confidence ?? "N/A"}%)
-      </div>
-      <div>
-        <strong>BPM Emotion:</strong> {data.bpm_emotion.label}(
-        {data.bpm_emotion.confidence ?? "N/A"}%)
+
+      {/* Emotion Data List */}
+      <div className="space-y-3">
+        <div className="flex justify-between items-center group">
+          <span className="text-xs font-semibold text-gray-500">GSR Emotion</span>
+          <div className="text-right">
+            <span className="text-sm font-bold text-gray-800 uppercase mr-2">{data.gsr_emotion.label}</span>
+            <span className="text-xs text-gray-400">({data.gsr_emotion.confidence ?? "N/A"}%)</span>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center group">
+          <span className="text-xs font-semibold text-gray-500">MWL</span>
+          <div className="text-right">
+            <span className="text-sm font-bold text-gray-800 uppercase mr-2">{data.mwl.label}</span>
+            <span className="text-xs text-gray-400">({data.mwl.confidence ?? "N/A"}%)</span>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center group">
+          <span className="text-xs font-semibold text-gray-500">BPM Emotion</span>
+          <div className="text-right">
+            <span className="text-sm font-bold text-gray-800 uppercase mr-2">{data.bpm_emotion.label}</span>
+            <span className="text-xs text-gray-400">({data.bpm_emotion.confidence ?? "N/A"}%)</span>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import ReadingsList from "../components/ReadingsList";
+import ReadingsList from "../screens/ReadingsList";
 function Reports() {
   return (
     <div>

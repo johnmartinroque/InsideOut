@@ -17,7 +17,7 @@ high_path = "../datasets/gsr/High_MWL"
 low_path = "../datasets/gsr/Low_MWL"
 
 # Lists of available files
-high_files = [2, 3, 5, 6, 10, 11, 12, 13, 16, 19, 20, 21, 23]
+high_files = [2, 3, 5, 10, 11, 12, 13, 19, 20, 21, 23]
 low_files = [3, 4, 5, 6, 8, 10, 13, 14, 15, 16, 17, 18, 20, 22, 23, 24, 25]
 
 def load_and_prepare_data(high_path, low_path):

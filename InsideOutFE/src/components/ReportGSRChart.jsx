@@ -80,13 +80,16 @@ export default function ReportGSRChart() {
       <h2 className="font-bold mb-4">GSR Chart</h2>
 
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <LineChart 
+          data={data}
+          margin={{bottom:30}}
+          >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" />
           <YAxis />
           <Tooltip />
 
-          <Line type="monotone" dataKey="gsr" strokeWidth={3} name="GSR" />
+          <Line type="monotone" dataKey="gsr" stroke="#408adf" strokeWidth={3} name="GSR" />
         </LineChart>
       </ResponsiveContainer>
     </div>

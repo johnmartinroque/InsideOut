@@ -99,21 +99,31 @@ export default function ReportDetailed() {
     <div className="p-6 space-y-6">
       <button
         onClick={() => navigate("/reports")}
-        type="button"
-        class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5"
+        className="group flex items-center gap-2 px-6 py-3 bg-white border-2 border-slate-100 rounded-full shadow-sm hover:shadow-md hover:border-slate-300 transition-all font-bold text-slate-600 text-sm"
       >
-        Purple to Blue
+        Back to Daily Reports
       </button>
+      
       <div className="border rounded-xl p-5 shadow bg-white">
         <h1 className="text-2xl font-bold mb-3">Report — {id}</h1>
 
         <div className="flex gap-8">
-          <p>
-            <strong>Average HR:</strong> {avg?.averageHB ?? "--"}
+          <p className="flex flex-col">
+            <strong className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+              Average HR
+            </strong> 
+            <span className="text-4xl font-mono font-bold text-slate-800 leading-none">
+              {avg?.averageHB ?? "--"}
+            </span>
           </p>
 
-          <p>
-            <strong>Average GSR:</strong> {avg?.averageGSR ?? "--"}
+          <p className="flex flex-col">
+            <strong className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+              Average GSR
+            </strong> 
+            <span className="text-4xl font-mono font-bold text-slate-800 leading-none">
+              {avg?.averageGSR ?? "--"}
+            </span>
           </p>
         </div>
       </div>

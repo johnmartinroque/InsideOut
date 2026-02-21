@@ -66,7 +66,11 @@ function Register() {
       <div className="w-full max-w-md bg-white p-10 rounded-3xl shadow-xl shadow-blue-100/50 border border-gray-100">
         
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-slate-800">Create Account</h2>
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Create{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+            Account
+          </span>
+        </h2>
           <p className="text-gray-500 mt-2">Join InsideOut and start monitoring</p>
         </div>
 

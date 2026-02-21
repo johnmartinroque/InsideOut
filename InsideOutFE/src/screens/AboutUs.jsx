@@ -4,9 +4,9 @@ function AboutUs() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header Section */}
-      <div className="relative w-full flex flex-col items-center justify-center pt-32 pb-16 px-6 text-center overflow-hidden">
+      <div className="relative w-full flex flex-col items-center justify-center pt-14 pb-16 px-6 text-center overflow-hidden">
         <div className="relative z-10 flex flex-col items-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight text-slate-800">
+          <h1 className="text-5xl md:text-5xl font-extrabold mb-10 tracking-tight text-slate-800">
             About 
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500 ml-3">
               Us

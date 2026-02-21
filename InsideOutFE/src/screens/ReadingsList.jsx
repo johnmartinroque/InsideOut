@@ -68,7 +68,7 @@ export default function ReadingsList() {
     );
 
   return (
-    <div className="max-w-3xl mx-auto p-2">
+    <div className="max-w-3xl mx-auto p-2 mb-4">
       {error && (
         <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg font-medium">
           {error}

@@ -46,9 +46,12 @@ function SideBar({ isExpanded, setIsExpanded }) {
               alt="Logo"
               className="h-10 w-auto object-contain brightness-110"
             />
-            <span className="font-bold text-xl tracking-tight text-white">
-              InsideOut
+            <span className="font-bold text-xl sm:text-xl tracking-tight text-white">
+            Inside
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">
+              Out
             </span>
+          </span>
           </div>
         )}
 

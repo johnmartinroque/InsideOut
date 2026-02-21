@@ -22,7 +22,10 @@ function GuestHeader() {
             className="w-10 sm:w-12 h-auto object-contain transition-transform group-hover:scale-105 brightness-110"
           />
           <span className="font-bold text-xl sm:text-xl tracking-tight text-white">
-            InsideOut
+            Inside
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">
+              Out
+            </span>
           </span>
         </Link>
 

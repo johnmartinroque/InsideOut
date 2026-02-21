@@ -68,9 +68,11 @@ function Login() {
         
         {/* Header Section */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-slate-800">
-            Welcome Back
-          </h2>
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Welcome{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+            Back
+          </span>
+        </h2>
           <p className="text-gray-500 mt-2">Please enter your details to login</p>
         </div>
 

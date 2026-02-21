@@ -68,30 +68,50 @@ export default function ReadingsList() {
     );
 
   return (
-    <div className="p-6">
-      {error && <p className="p-4 text-red-500">{error}</p>}
+    <div className="max-w-3xl mx-auto p-2">
+      {error && (
+        <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg font-medium">
+          {error}
+        </div>
+      )}
 
-      <h2 className="text-xl font-bold mb-4">Daily Reports</h2>
+      <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-6 mt-6 text-center">Daily{" "}
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+            Reports
+          </span>
+      </h2>
 
       {days.length === 0 ? (
-        <p>No readings found.</p>
+        <p className="text-xl text-gray-500 bg-gray-50 p-10 rounded-xl text-center border-2 border-dashed">
+          No readings found.
+        </p>
       ) : (
-        <div className="space-y-3">
+        <div className="flex flex-col gap-6">
           {days.map((d) => (
             <div
               key={d.id}
               onClick={() => navigate(`/report/${d.id}`)}
-              className="border rounded-lg p-4 shadow bg-white cursor-pointer hover:shadow-lg transition"
+              className="p-8 bg-white border-2 border-gray-100 rounded-2xl shadow-md hover:shadow-xl hover:border-gray-300 transition-all cursor-pointer"
             >
-              <p className="font-semibold text-lg">{d.id}</p>
+              {/* Large Date/ID Header */}
+              <p className="text-2xl font-bold text-gray-800 mb-4">{d.id}</p>
 
-              <p>
-                <strong>Average HR:</strong> {d.averageHB ?? "--"}
-              </p>
-
-              <p>
-                <strong>Average GSR:</strong> {d.averageGSR ?? "--"}
-              </p>
+              {/* High-Visibility Biometrics */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="flex flex-col py-2 px-4 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Average HR</span>
+                  <span className="text-3xl font-mono font-bold text-gray-900">
+                    {d.averageHB ?? "--"} <span className="text-sm font-sans text-gray-400">BPM</span>
+                  </span>
+                </div>
+                
+                <div className="flex flex-col py-2 px-4 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Average GSR</span>
+                  <span className="text-3xl font-mono font-bold text-gray-900">
+                    {d.averageGSR ?? "--"}
+                  </span>
+                </div>
+              </div>
             </div>
           ))}
         </div>

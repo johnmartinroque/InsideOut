@@ -4,16 +4,15 @@ import ElderlyInformation from "../components/profile/ElderlyInformation";
 
 function Profile() {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-24 md:pt-16 pb-16 px-4 md:px-10">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start pt-10 md:pt-10 pb-16 px-4 md:px-10">
       
       {/* Page Title */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 relative inline-block">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-600">
-            Profile Overview
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Profile{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+            Overview
           </span>
-        </h1>
-        <div className="mt-4 w-24 h-1.5 bg-gradient-to-r from-blue-500 to-green-500 mx-auto rounded-full"></div>
+        </h2>
       </div>
 
       {/* Main Container - Stacked for maximum width */}

@@ -59,7 +59,7 @@ function Home() {
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex justify-center items-start">
             <CurrentStatus />
           </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 md:col-span-2 lg:col-span-1 flex justify-center items-start">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 md:col-span-2 lg:col-span-1 flex justify-center">
             <ESP32Detector />
           </div>
         </div>

@@ -64,7 +64,7 @@ export default function CompanionsList() {
    <div className="bg-white shadow-lg rounded-2xl p-6 border border-gray-100 h-fit">
       {/* Header section with Icon */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600 shrink-0">
+        <div className="p-2.5 bg-blue-50 rounded-xl text-green-700 shrink-0">
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
@@ -79,7 +79,7 @@ export default function CompanionsList() {
             className="group flex flex-col sm:flex-row items-start gap-4 p-5 rounded-xl border border-gray-100 hover:border-blue-100 hover:bg-blue-50/20 transition-all duration-200"
           >
             {/* Initial Avatar */}
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold shrink-0 shadow-md">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-green-500 flex items-center justify-center text-white font-bold shrink-0 shadow-md">
               {c.fullName?.charAt(0).toUpperCase() || c.email?.charAt(0).toUpperCase()}
             </div>
 

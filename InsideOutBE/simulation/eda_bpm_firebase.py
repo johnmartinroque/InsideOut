@@ -14,7 +14,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 USER_ID = "QV6m7zrKxSP4PnMjcVab"
-SAVE_INTERVAL = 30  # seconds
+SAVE_INTERVAL = 60  # seconds
 TZ = ZoneInfo("Asia/Manila")
 months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
 

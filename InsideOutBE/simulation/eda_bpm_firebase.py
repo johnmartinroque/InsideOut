@@ -14,7 +14,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 USER_ID = "QV6m7zrKxSP4PnMjcVab"
-SAVE_INTERVAL = 120
+SAVE_INTERVAL = 60
 TZ = ZoneInfo("Asia/Manila")
 months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
 
@@ -89,20 +89,29 @@ def save_to_firestore():
     day_doc_id = f"{now.day}{months[now.month-1]}"
     time_doc_id = now.strftime("%H%M%S")
 
-    avg_gsr = round(sum(gsr_values)/len(gsr_values),3) if gsr_values else None
-    avg_bpm = round(sum(bpm_values)/len(bpm_values)) if bpm_values else None
+    # --- Calculate averages ---
+    avg_gsr_day = round(sum(gsr_values)/len(gsr_values), 3) if gsr_values else None
+    avg_bpm_day = round(sum(bpm_values)/len(bpm_values)) if bpm_values else None
 
+    # --- Interval averages ---
+    interval_avg_gsr = round(np.mean(gsr_values), 3) if gsr_values else None
+    interval_avg_bpm = round(np.mean(bpm_values)) if bpm_values else None
+
+    # --- Update day document ---
     day_doc_ref = readings_ref.document(day_doc_id)
     day_doc_ref.set({
-        "averageGSR": avg_gsr,
-        "averageHB": avg_bpm
+        "averageGSR": avg_gsr_day,
+        "averageHB": avg_bpm_day
     }, merge=True)
 
+    # --- Save interval data ---
     day_doc_ref.collection("times").document(time_doc_id).set({
         "timestamp": now,
-        "timeRange": time_range,       # <-- Add this
+        "timeRange": time_range,
         "gsr": latest_prediction["gsr"],
         "heart_rate": latest_prediction["bpm"],
+        "gsr_interval_avg": interval_avg_gsr,       # <-- interval average GSR
+        "hb_interval_avg": interval_avg_bpm,        # <-- interval average BPM
         "gsr_emotion": latest_prediction["gsr_emotion"]["label"],
         "mwl": latest_prediction["mwl"]["label"],
         "bpm_emotion": latest_prediction["bpm_emotion"]["label"]
@@ -110,6 +119,7 @@ def save_to_firestore():
 
     print(f"Saved → {day_doc_id}/times/{time_doc_id} | day averages updated | {time_range}")
 
+    # Reset values for next interval
     gsr_values = []
     bpm_values = []
     last_save_time = now

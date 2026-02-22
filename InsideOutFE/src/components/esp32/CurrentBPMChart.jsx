@@ -65,14 +65,15 @@ export default function CurrentBPMChart() {
         const snap = await getDocs(q);
 
         const list = snap.docs.map((d) => {
-          const t = d.data().timestamp?.toDate();
+          const data = d.data();
+          const startTime = data.timestamp?.toDate();
           return {
-            time: t?.toLocaleTimeString([], {
+            time: startTime?.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-              second: "2-digit",
-            }),
-            bpm: d.data().heart_rate,
+            }), // <-- X-axis label
+            timeRange: data.timeRange || "", // <-- Tooltip label
+            bpm: data.heart_rate,
           };
         });
 
@@ -100,7 +101,13 @@ export default function CurrentBPMChart() {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" />
           <YAxis />
-          <Tooltip />
+          <Tooltip
+            formatter={(value, name) => [`${value}`, name]}
+            labelFormatter={(label, payload) => {
+              // payload[0].payload contains the full data point
+              return payload?.[0]?.payload?.timeRange || label;
+            }}
+          />
           <Line
             type="monotone"
             dataKey="bpm"

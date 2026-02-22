@@ -7,7 +7,6 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import firebase_admin
 from firebase_admin import credentials, firestore
-from triggerAlert import check_and_alert
 
 # =================== FIREBASE INIT ===================
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -15,7 +14,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 USER_ID = "QV6m7zrKxSP4PnMjcVab"
-SAVE_INTERVAL = 120  # seconds
+SAVE_INTERVAL = 120
 TZ = ZoneInfo("Asia/Manila")
 months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
 
@@ -81,6 +80,12 @@ def save_to_firestore():
         return
 
     now = datetime.now(TZ)
+    start_time = last_save_time or now  # If first save, start_time = now
+    end_time = now
+
+    # Format time range string
+    time_range = f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}"
+
     day_doc_id = f"{now.day}{months[now.month-1]}"
     time_doc_id = now.strftime("%H%M%S")
 
@@ -95,6 +100,7 @@ def save_to_firestore():
 
     day_doc_ref.collection("times").document(time_doc_id).set({
         "timestamp": now,
+        "timeRange": time_range,       # <-- Add this
         "gsr": latest_prediction["gsr"],
         "heart_rate": latest_prediction["bpm"],
         "gsr_emotion": latest_prediction["gsr_emotion"]["label"],
@@ -102,7 +108,7 @@ def save_to_firestore():
         "bpm_emotion": latest_prediction["bpm_emotion"]["label"]
     })
 
-    print(f"Saved → {day_doc_id}/times/{time_doc_id} | day averages updated")
+    print(f"Saved → {day_doc_id}/times/{time_doc_id} | day averages updated | {time_range}")
 
     gsr_values = []
     bpm_values = []
@@ -140,9 +146,6 @@ def receive_data():
                 "gsr_emotion": {"label": emotion_label, "confidence": confidence_emotion},
                 "mwl": {"label": mwl_label, "confidence": confidence_mwl}
             })
-            
-            # Check for alert
-            check_and_alert(latest_prediction)
 
             gsr_values.append(value)
 

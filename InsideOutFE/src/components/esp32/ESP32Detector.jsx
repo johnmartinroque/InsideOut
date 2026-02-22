@@ -20,27 +20,34 @@ function StatusCircle({ status, label }) {
 }
 
 export default function ESP32Detector() {
-  const [device1, setDevice1] = useState("checking");
-  const [device2, setDevice2] = useState("checking");
+  const [deviceStatus, setDeviceStatus] = useState("checking");
+  const [lastTimestamp, setLastTimestamp] = useState(null);
+  const SERVER = "http://192.168.100.33:5001/latest";
+  const OFFLINE_THRESHOLD = 30 * 1000; // 30 seconds
 
   useEffect(() => {
-    const randomStatus = () => (Math.random() > 0.5 ? "online" : "offline");
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(SERVER);
+        const data = await res.json();
 
-    const updateStatus = () => {
-      setDevice1(randomStatus());
-      setDevice2(randomStatus());
+        const now = Date.now();
+
+        if (data.bpm || data.gsr) {
+          setLastTimestamp(now); // update last seen
+          setDeviceStatus("online");
+        } else if (lastTimestamp && now - lastTimestamp > OFFLINE_THRESHOLD) {
+          setDeviceStatus("offline");
+        }
+      } catch (err) {
+        setDeviceStatus("offline");
+      }
     };
 
-    updateStatus(); // initial check
-
-    const interval = setInterval(updateStatus, 5000); // every 5 sec
+    checkStatus(); // initial check
+    const interval = setInterval(checkStatus, 5000); // every 5 sec
     return () => clearInterval(interval);
-  }, []);
+  }, [lastTimestamp]);
 
-  return (
-    <div className="grid md:grid-cols-2 gap-4">
-      <StatusCircle status={device1} label="ESP32 Sensor #1 Heartbeat" />
-      <StatusCircle status={device2} label="ESP32 Sensor #2 GSR" />
-    </div>
-  );
+  return <StatusCircle status={deviceStatus} label="ESP32 Sensor" />;
 }

@@ -93,13 +93,10 @@ export default function CurrentEDAChart() {
 
   return (
     <div className="bg-white shadow rounded-xl p-5 h-[400px]">
-      <h2 className="font-bold mb-4">Current EDA</h2>
+      <h2 className="font-bold mb-4">EDA average per 2 minutes</h2>
 
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart 
-          data={data}
-          margin={{bottom:30}}
-          >
+        <LineChart data={data} margin={{ bottom: 30 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" />
           <YAxis />

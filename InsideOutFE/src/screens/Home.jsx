@@ -10,6 +10,7 @@ import CurrentEDA from "../components/esp32/CurrentEDA";
 import CurrentBPMChart from "../components/esp32/CurrentBPMChart";
 import CurrentEDAChart from "../components/esp32/CurrentEDAChart";
 import ESP32Detector from "../components/esp32/ESP32Detector";
+import DailyAverages from "../components/DailyAverages";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -60,6 +61,8 @@ function Home() {
             <ESP32Detector />
           </div>
         </div>
+
+        <DailyAverages />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-start justify-center">

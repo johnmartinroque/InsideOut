@@ -75,51 +75,60 @@ def extract_gsr_features_for_prediction(gsr_value):
 
 # =================== FIREBASE SAVE ===================
 def save_to_firestore():
-    global last_save_time, gsr_values, bpm_values, latest_prediction
+    global last_save_time, gsr_values, bpm_values
+
     if not gsr_values and not bpm_values:
         return
 
     now = datetime.now(TZ)
-    start_time = last_save_time or now  # If first save, start_time = now
+    start_time = last_save_time or now
     end_time = now
 
-    # Format time range string
     time_range = f"{start_time.strftime('%I:%M %p')} - {end_time.strftime('%I:%M %p')}"
-
     day_doc_id = f"{now.day}{months[now.month-1]}"
     time_doc_id = now.strftime("%H%M%S")
 
-    # --- Calculate averages ---
-    avg_gsr_day = round(sum(gsr_values)/len(gsr_values), 3) if gsr_values else None
-    avg_bpm_day = round(sum(bpm_values)/len(bpm_values)) if bpm_values else None
-
-    # --- Interval averages ---
+    # --- interval averages ---
     interval_avg_gsr = round(np.mean(gsr_values), 3) if gsr_values else None
     interval_avg_bpm = round(np.mean(bpm_values)) if bpm_values else None
 
-    # --- Update day document ---
     day_doc_ref = readings_ref.document(day_doc_id)
-    day_doc_ref.set({
-        "averageGSR": avg_gsr_day,
-        "averageHB": avg_bpm_day
-    }, merge=True)
 
-    # --- Save interval data ---
+    # ---------- SAVE INTERVAL ----------
     day_doc_ref.collection("times").document(time_doc_id).set({
         "timestamp": now,
         "timeRange": time_range,
-        "gsr": latest_prediction["gsr"],
-        "heart_rate": latest_prediction["bpm"],
-        "gsr_interval_avg": interval_avg_gsr,       # <-- interval average GSR
-        "hb_interval_avg": interval_avg_bpm,        # <-- interval average BPM
-        "gsr_emotion": latest_prediction["gsr_emotion"]["label"],
-        "mwl": latest_prediction["mwl"]["label"],
-        "bpm_emotion": latest_prediction["bpm_emotion"]["label"]
+        "gsr_interval_avg": interval_avg_gsr,
+        "hb_interval_avg": interval_avg_bpm
     })
 
-    print(f"Saved → {day_doc_id}/times/{time_doc_id} | day averages updated | {time_range}")
+    # ---------- UPDATE DAY AVERAGE ----------
+    day_doc = day_doc_ref.get()
 
-    # Reset values for next interval
+    if day_doc.exists:
+        data = day_doc.to_dict()
+        prev_gsr_avg = data.get("averageGSR", 0)
+        prev_bpm_avg = data.get("averageHB", 0)
+        count = data.get("count", 0)
+    else:
+        prev_gsr_avg = 0
+        prev_bpm_avg = 0
+        count = 0
+
+    new_count = count + 1
+
+    new_gsr_avg = round(((prev_gsr_avg * count) + interval_avg_gsr) / new_count, 3) if interval_avg_gsr else prev_gsr_avg
+    new_bpm_avg = round(((prev_bpm_avg * count) + interval_avg_bpm) / new_count) if interval_avg_bpm else prev_bpm_avg
+
+    day_doc_ref.set({
+        "averageGSR": new_gsr_avg,
+        "averageHB": new_bpm_avg,
+        "count": new_count
+    }, merge=True)
+
+    print(f"Saved interval → {day_doc_id}/{time_doc_id}")
+
+    # reset buffers
     gsr_values = []
     bpm_values = []
     last_save_time = now

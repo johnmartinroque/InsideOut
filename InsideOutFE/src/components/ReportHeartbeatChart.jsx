@@ -50,13 +50,16 @@ export default function ReportHeartbeatChart() {
         const snap = await getDocs(q);
 
         const list = snap.docs.map((d) => {
-          const t = d.data().timestamp?.toDate();
+          const data = d.data();
+          const t = data.timestamp?.toDate();
+
           return {
             time: t?.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             }),
-            heartRate: d.data().heart_rate,
+            timeRange: data.timeRange || "",
+            bpm: data.hb_interval_avg,
           };
         });
 
@@ -77,24 +80,25 @@ export default function ReportHeartbeatChart() {
 
   return (
     <div className="bg-white shadow rounded-xl p-5 h-[400px]">
-      <h2 className="font-bold mb-4">Heart Rate Chart</h2>
+      <h2 className="font-bold mb-4">Heart Rate Average</h2>
 
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart 
-          data={data}
-          margin={{bottom:30}}
-          >
+        <LineChart data={data} margin={{ bottom: 30 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" />
           <YAxis />
-          <Tooltip />
-
+          <Tooltip
+            formatter={(value, name) => [`${value}`, name]}
+            labelFormatter={(label, payload) => {
+              return payload?.[0]?.payload?.timeRange || label;
+            }}
+          />
           <Line
             type="monotone"
-            dataKey="heartRate"
+            dataKey="bpm"
             stroke="#ef4444"
             strokeWidth={3}
-            name="Heart Rate"
+            name="BPM"
           />
         </LineChart>
       </ResponsiveContainer>

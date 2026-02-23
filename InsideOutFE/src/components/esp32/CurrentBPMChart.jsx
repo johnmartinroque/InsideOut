@@ -71,9 +71,9 @@ export default function CurrentBPMChart() {
             time: startTime?.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-            }), // <-- X-axis label
-            timeRange: data.timeRange || "", // <-- Tooltip label
-            bpm: data.heart_rate,
+            }),
+            timeRange: data.timeRange || "",
+            bpm: data.hb_interval_avg ?? data.heart_rate,
           };
         });
 

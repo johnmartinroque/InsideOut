@@ -35,7 +35,7 @@ export default function CurrentEDAChart() {
 
         const elderlyID = companionSnap.data().elderlyID;
 
-        // --- Get today's date doc ID ---
+        // --- today's doc ---
         const today = new Date();
         const months = [
           "jan",
@@ -65,17 +65,18 @@ export default function CurrentEDAChart() {
         const snap = await getDocs(q);
 
         const list = snap.docs.map((d) => {
-          const t = d.data().timestamp?.toDate();
+          const data = d.data();
+          const startTime = data.timestamp?.toDate();
+
           return {
-            time: t?.toLocaleTimeString([], {
+            time: startTime?.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-              second: "2-digit",
             }),
-            eda: d.data().gsr,
+            timeRange: data.timeRange || "",
+            eda: data.gsr_interval_avg ?? data.gsr,
           };
         });
-
         setData(list);
       } catch (err) {
         console.error(err);
@@ -100,7 +101,12 @@ export default function CurrentEDAChart() {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" />
           <YAxis />
-          <Tooltip />
+          <Tooltip
+            formatter={(value, name) => [`${value}`, name]}
+            labelFormatter={(label, payload) => {
+              return payload?.[0]?.payload?.timeRange || label;
+            }}
+          />
           <Line
             type="monotone"
             dataKey="eda"

@@ -7,6 +7,8 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import firebase_admin
 from firebase_admin import credentials, firestore
+from triggerAlert import check_and_alert
+
 
 # =================== FIREBASE INIT ===================
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -165,6 +167,8 @@ def receive_data():
                 "gsr_emotion": {"label": emotion_label, "confidence": confidence_emotion},
                 "mwl": {"label": mwl_label, "confidence": confidence_mwl}
             })
+
+            check_and_alert(latest_prediction)
 
             gsr_values.append(value)
 

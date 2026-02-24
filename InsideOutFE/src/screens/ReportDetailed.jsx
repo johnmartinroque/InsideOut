@@ -10,8 +10,9 @@ import {
 } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
-import ReportGSRChart from "../components/ReportGSRChart";
 import ReportHeartbeatChart from "../components/ReportHeartbeatChart";
+import ReportEDAChart from "../components/ReportEDAChart";
+import ReportBPMChart from "../components/ReportBPMChart";
 
 export default function ReportDetailed() {
   const { id } = useParams(); // day id from URL
@@ -103,7 +104,7 @@ export default function ReportDetailed() {
       >
         Back to Daily Reports
       </button>
-      
+
       <div className="border rounded-xl p-5 shadow bg-white">
         <h1 className="text-2xl font-bold mb-3">Report — {id}</h1>
 
@@ -111,7 +112,7 @@ export default function ReportDetailed() {
           <p className="flex flex-col">
             <strong className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
               Average HR
-            </strong> 
+            </strong>
             <span className="text-4xl font-mono font-bold text-slate-800 leading-none">
               {avg?.averageHB ?? "--"}
             </span>
@@ -120,7 +121,7 @@ export default function ReportDetailed() {
           <p className="flex flex-col">
             <strong className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
               Average GSR
-            </strong> 
+            </strong>
             <span className="text-4xl font-mono font-bold text-slate-800 leading-none">
               {avg?.averageGSR ?? "--"}
             </span>
@@ -159,8 +160,8 @@ export default function ReportDetailed() {
       */}
 
       <div className="space-y-6">
-        <ReportHeartbeatChart />
-        <ReportGSRChart />
+        <ReportBPMChart />
+        <ReportEDAChart />
       </div>
     </div>
   );

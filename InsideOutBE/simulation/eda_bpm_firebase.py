@@ -172,7 +172,7 @@ def receive_data():
 
             gsr_values.append(value)
 
-            print(f"GSR = {value:.3f}, Emotion = {emotion_label}, MWL = {mwl_label}")
+            print(f"GSR = {value:.3f} μS | "f"Emotion = {emotion_label} ({confidence_emotion}%) | "f"MWL = {mwl_label} ({confidence_mwl}%)")
 
         elif device == "bpm":
             # --- BPM EMOTION ---
@@ -189,7 +189,7 @@ def receive_data():
 
             bpm_values.append(value)
 
-            print(f"BPM = {value}, Emotion = {bpm_label}")
+            print(f"BPM = {int(value)} | "f"Emotion = {bpm_label} ({confidence}%)")
 
         else:
             return jsonify({"error":"Unknown device"}), 400

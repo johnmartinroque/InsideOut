@@ -53,12 +53,9 @@ function Home() {
           onClose={() => setShowModal(false)}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex justify-center items-start">
+        <div className="flex justify-center">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 w-full max-w-lg flex justify-center items-center">
             <DateTime />
-          </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 md:col-span-2 lg:col-span-1 flex justify-center">
-            <ESP32Detector />
           </div>
         </div>
 

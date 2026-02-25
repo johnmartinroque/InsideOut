@@ -21,6 +21,8 @@ import Spinner from "../Spinner";
 
 export default function CurrentEDAChart() {
   const [data, setData] = useState([]);
+  const [stressConfidence, setStressConfidence] = useState("-");
+  const [workloadConfidence, setWorkloadConfidence] = useState("-");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

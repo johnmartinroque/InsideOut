@@ -6,6 +6,7 @@ export default function CurrentBPM() {
   const [bpm, setBpm] = useState("-");
   const [emotion, setEmotion] = useState("-");
   const [loading, setLoading] = useState(true);
+  const [confidence, setConfidence] = useState("-");
 
   const emotionStyles = {
     Calm: "bg-blue-50 text-blue-600",
@@ -23,6 +24,7 @@ export default function CurrentBPM() {
       const data = await res.json();
       setBpm(data.bpm ?? "-");
       setEmotion(data.bpm_emotion?.label ?? "-");
+      setConfidence(data.bpm_emotion?.confidence ?? "-");
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -52,6 +54,9 @@ export default function CurrentBPM() {
         >
           <p className="text-sm text-gray-500">Emotion</p>
           <p className="text-xl font-semibold">{emotion}</p>
+          <p className="text-xs mt-1">
+            {confidence !== "-" ? `Confidence: ${confidence}%` : ""}
+          </p>
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ export default function CurrentEDA() {
   const [workload, setWorkload] = useState("-");
   const [stress, setStress] = useState("-");
   const [loading, setLoading] = useState(true);
+  const [stressConfidence, setStressConfidence] = useState("-");
+  const [workloadConfidence, setWorkloadConfidence] = useState("-");
 
   const fetchLatest = async () => {
     try {
@@ -16,6 +18,8 @@ export default function CurrentEDA() {
       setEda(data.gsr ?? "-");
       setWorkload(data.mwl?.label ?? "-");
       setStress(data.gsr_emotion?.label ?? "-");
+      setWorkloadConfidence(data.mwl?.confidence ?? "-");
+      setStressConfidence(data.gsr_emotion?.confidence ?? "-");
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -53,11 +57,19 @@ export default function CurrentEDA() {
         <div className={`p-4 rounded-xl text-center ${workloadStyle}`}>
           <p className="text-sm text-gray-500">Mental Workload</p>
           <p className="text-xl font-semibold">{workload}</p>
+          <p className="text-xs mt-1">
+            {workloadConfidence !== "-"
+              ? `Confidence: ${workloadConfidence}%`
+              : ""}
+          </p>
         </div>
 
         <div className={`p-4 rounded-xl text-center ${stressStyle}`}>
           <p className="text-sm text-gray-500">State</p>
           <p className="text-xl font-semibold">{stress}</p>
+          <p className="text-xs mt-1">
+            {stressConfidence !== "-" ? `Confidence: ${stressConfidence}%` : ""}
+          </p>
         </div>
       </div>
     </div>

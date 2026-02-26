@@ -129,36 +129,6 @@ export default function ReportDetailed() {
         </div>
       </div>
 
-      {/* 
-        <div className="space-y-3">
-        {data.length === 0 ? (
-          <p>No readings found for this day.</p>
-        ) : (
-          data.map((r) => (
-            <div key={r.id} className="border rounded-lg p-4 shadow bg-white">
-              <p>
-                <strong>Time:</strong>{" "}
-                {r.timestamp?.toDate().toLocaleTimeString()}
-              </p>
-
-              <p>
-                <strong>Heart Rate:</strong> {r.heart_rate}
-              </p>
-
-              <p>
-                <strong>GSR:</strong> {r.gsr}
-              </p>
-
-              <p>
-                <strong>Status:</strong> {r.status}
-              </p>
-            </div>
-          ))
-        )}
-      </div>
-      
-      */}
-
       <div className="space-y-6">
         <ReportBPMChart />
         <ReportEDAChart />

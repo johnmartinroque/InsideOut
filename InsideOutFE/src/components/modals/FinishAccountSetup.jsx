@@ -11,6 +11,18 @@ export default function FinishAccountSetup({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
+  const handlePhoneChange = (e) => {
+    // Remove non-numeric characters
+    let value = e.target.value.replace(/\D/g, "");
+
+    // Limit to 11 digits
+    if (value.length > 11) {
+      value = value.slice(0, 11);
+    }
+
+    setPhoneNumber(value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -22,40 +34,39 @@ export default function FinishAccountSetup({ isOpen, onClose }) {
       return setMessage("Please fill in all fields");
     }
 
+    if (phoneNumber.length !== 11) {
+      return setMessage("Phone number must be exactly 11 digits");
+    }
+
     try {
       setLoading(true);
 
       // 1️⃣ Update Firestore
       await updateDoc(doc(db, "companion", user.uid), {
         elderlyID: elderlyID.trim(),
-        phoneNumber: phoneNumber.trim(),
+        phoneNumber: phoneNumber,
         fullName: fullName.trim(),
       });
 
-      // 2️⃣ Fetch updated companion document
+      // 2️⃣ Fetch updated document
       const companionRef = doc(db, "companion", user.uid);
       const companionSnap = await getDoc(companionRef);
 
-      let updatedElderlyID = "";
-      let updatedFullName = "";
-      let updatedPhoneNumber = "";
+      let updatedData = {};
 
       if (companionSnap.exists()) {
-        const data = companionSnap.data();
-        updatedElderlyID = data.elderlyID || "";
-        updatedFullName = data.fullName || "";
-        updatedPhoneNumber = data.phoneNumber || "";
+        updatedData = companionSnap.data();
       }
 
-      // 3️⃣ Update localStorage userInfo
+      // 3️⃣ Update localStorage
       const existingUserInfo =
         JSON.parse(localStorage.getItem("userInfo")) || {};
 
       const updatedUserInfo = {
         ...existingUserInfo,
-        elderlyID: updatedElderlyID,
-        fullName: updatedFullName,
-        phoneNumber: updatedPhoneNumber,
+        elderlyID: updatedData.elderlyID || "",
+        fullName: updatedData.fullName || "",
+        phoneNumber: updatedData.phoneNumber || "",
       };
 
       localStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
@@ -65,7 +76,7 @@ export default function FinishAccountSetup({ isOpen, onClose }) {
       setTimeout(() => {
         setMessage("");
         onClose();
-        window.location.reload(); // optional: forces UI refresh
+        window.location.reload();
       }, 1200);
     } catch (err) {
       console.error(err);
@@ -86,6 +97,7 @@ export default function FinishAccountSetup({ isOpen, onClose }) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Companion Name */}
             <div>
               <label className="block text-sm mb-1">Companion Name</label>
               <input
@@ -98,18 +110,21 @@ export default function FinishAccountSetup({ isOpen, onClose }) {
               />
             </div>
 
+            {/* Phone Number */}
             <div>
               <label className="block text-sm mb-1">Phone Number</label>
               <input
-                type="tel"
+                type="text"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={handlePhoneChange}
                 placeholder="09XXXXXXXXX"
+                maxLength="11"
                 required
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
+            {/* Elderly ID */}
             <div>
               <label className="block text-sm mb-1">Enter Elderly ID</label>
               <input

@@ -58,7 +58,9 @@ function Home() {
           </div>
         </div>
 
-        <DailyAverages />
+        <div className="flex justify-center">
+          <DailyAverages />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-start justify-center">

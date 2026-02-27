@@ -3,7 +3,9 @@ import ReadingsList from "../screens/ReadingsList";
 function Reports() {
   return (
     <div>
+      {/* 
       <ReadingsList />
+      */}
     </div>
   );
 }

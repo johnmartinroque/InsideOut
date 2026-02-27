@@ -15,7 +15,7 @@ cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-USER_ID = "QV6m7zrKxSP4PnMjcVab"
+USER_ID = "lNnNXfluHozH5HEDcEex"
 SAVE_INTERVAL = 60
 TZ = ZoneInfo("Asia/Manila")
 months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
@@ -196,8 +196,15 @@ def receive_data():
 
         # --- SAVE TO FIREBASE PERIODICALLY ---
         now = datetime.now(TZ)
-        if last_save_time is None or (now - last_save_time).total_seconds() >= SAVE_INTERVAL:
-            save_to_firestore()
+
+        # Start timer only after first valid data
+        if last_save_time is None:
+            last_save_time = now
+
+        # Save only if interval passed AND both buffers have data
+        elif (now - last_save_time).total_seconds() >= SAVE_INTERVAL:
+            if gsr_values and bpm_values:
+                save_to_firestore()
 
         return jsonify(latest_prediction), 200
 

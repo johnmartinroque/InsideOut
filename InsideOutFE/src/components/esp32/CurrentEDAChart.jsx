@@ -3,9 +3,9 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
   query,
   orderBy,
+  onSnapshot,
 } from "firebase/firestore";
 import {
   LineChart,
@@ -21,13 +21,13 @@ import Spinner from "../Spinner";
 
 export default function CurrentEDAChart() {
   const [data, setData] = useState([]);
-  const [stressConfidence, setStressConfidence] = useState("-");
-  const [workloadConfidence, setWorkloadConfidence] = useState("-");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
+    let unsubscribe;
+
+    const setupRealtime = async () => {
       try {
         const user = auth.currentUser;
         if (!user) return setError("User not logged in");
@@ -37,7 +37,6 @@ export default function CurrentEDAChart() {
 
         const elderlyID = companionSnap.data().elderlyID;
 
-        // --- today's doc ---
         const today = new Date();
         const months = [
           "jan",
@@ -63,32 +62,40 @@ export default function CurrentEDAChart() {
           dayDocId,
           "times",
         );
+
         const q = query(timesRef, orderBy("timestamp", "asc"));
-        const snap = await getDocs(q);
 
-        const list = snap.docs.map((d) => {
-          const data = d.data();
-          const startTime = data.timestamp?.toDate();
+        // 🔥 REALTIME LISTENER
+        unsubscribe = onSnapshot(q, (snap) => {
+          const list = snap.docs.map((d) => {
+            const data = d.data();
+            const startTime = data.timestamp?.toDate();
 
-          return {
-            time: startTime?.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-            timeRange: data.timeRange || "",
-            eda: data.gsr_interval_avg ?? data.gsr,
-          };
+            return {
+              time: startTime?.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              timeRange: data.timeRange || "",
+              eda: data.gsr_interval_avg ?? data.gsr,
+            };
+          });
+
+          setData(list);
+          setLoading(false);
         });
-        setData(list);
       } catch (err) {
         console.error(err);
         setError("Failed to load EDA chart");
-      } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    setupRealtime();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   if (loading) return <Spinner />;
@@ -105,9 +112,9 @@ export default function CurrentEDAChart() {
           <YAxis />
           <Tooltip
             formatter={(value, name) => [`${value}`, name]}
-            labelFormatter={(label, payload) => {
-              return payload?.[0]?.payload?.timeRange || label;
-            }}
+            labelFormatter={(label, payload) =>
+              payload?.[0]?.payload?.timeRange || label
+            }
           />
           <Line
             type="monotone"

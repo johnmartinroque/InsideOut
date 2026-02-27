@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
-import ReportHeartbeatChart from "../components/ReportHeartbeatChart";
+
 import ReportEDAChart from "../components/ReportEDAChart";
 import ReportBPMChart from "../components/ReportBPMChart";
 

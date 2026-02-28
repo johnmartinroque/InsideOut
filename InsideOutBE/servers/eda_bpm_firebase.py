@@ -16,7 +16,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 USER_ID = "alcHApCZqkI4l4XKUbRw"
-SAVE_INTERVAL = 600
+SAVE_INTERVAL = 30
 TZ = ZoneInfo("Asia/Manila")
 months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
 
@@ -104,29 +104,50 @@ def save_to_firestore():
         "hb_interval_avg": interval_avg_bpm
     })
 
-    # ---------- UPDATE DAY AVERAGE ----------
+    # ---------- UPDATE DAY AVERAGES SEPARATELY ----------
     day_doc = day_doc_ref.get()
 
     if day_doc.exists:
         data = day_doc.to_dict()
+
         prev_gsr_avg = data.get("averageGSR", 0)
         prev_bpm_avg = data.get("averageHB", 0)
-        count = data.get("count", 0)
+
+        gsr_count = data.get("gsrCount", 0)
+        hb_count = data.get("hbCount", 0)
+
     else:
         prev_gsr_avg = 0
         prev_bpm_avg = 0
-        count = 0
+        gsr_count = 0
+        hb_count = 0
 
-    new_count = count + 1
+    update_data = {}
 
-    new_gsr_avg = round(((prev_gsr_avg * count) + interval_avg_gsr) / new_count, 3) if interval_avg_gsr else prev_gsr_avg
-    new_bpm_avg = round(((prev_bpm_avg * count) + interval_avg_bpm) / new_count) if interval_avg_bpm else prev_bpm_avg
+    # ----- UPDATE GSR -----
+    if interval_avg_gsr is not None:
+        new_gsr_count = gsr_count + 1
+        new_gsr_avg = round(
+            ((prev_gsr_avg * gsr_count) + interval_avg_gsr) / new_gsr_count,
+            3
+        )
 
-    day_doc_ref.set({
-        "averageGSR": new_gsr_avg,
-        "averageHB": new_bpm_avg,
-        "count": new_count
-    }, merge=True)
+        update_data["averageGSR"] = new_gsr_avg
+        update_data["gsrCount"] = new_gsr_count
+
+    # ----- UPDATE BPM -----
+    if interval_avg_bpm is not None:
+        new_hb_count = hb_count + 1
+        new_bpm_avg = round(
+            ((prev_bpm_avg * hb_count) + interval_avg_bpm) / new_hb_count
+        )
+
+        update_data["averageHB"] = new_bpm_avg
+        update_data["hbCount"] = new_hb_count
+
+    # Save updates
+    if update_data:
+        day_doc_ref.set(update_data, merge=True)
 
     print(f"Saved interval → {day_doc_id}/{time_doc_id}")
 
@@ -203,7 +224,7 @@ def receive_data():
 
         # Save only if interval passed AND both buffers have data
         elif (now - last_save_time).total_seconds() >= SAVE_INTERVAL:
-            if gsr_values and bpm_values:
+            if gsr_values or bpm_values:
                 save_to_firestore()
 
         return jsonify(latest_prediction), 200

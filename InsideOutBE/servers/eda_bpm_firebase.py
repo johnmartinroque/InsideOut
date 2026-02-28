@@ -167,6 +167,32 @@ def receive_data():
 
         device = data["device"]
         value = float(data["value"])
+        
+        now = datetime.now(TZ)
+        day_doc_id = f"{now.day}{months[now.month-1]}"
+        day_doc_ref = readings_ref.document(day_doc_id)
+
+        if device == "gsr":
+
+            ...
+            gsr_values.append(value)
+
+            # 🔥 NEW
+            day_doc_ref.set({
+                "latestEDA": round(value, 3),
+                "lastUpdated": now
+            }, merge=True)
+
+        elif device == "bpm":
+
+            ...
+            bpm_values.append(value)
+
+            # 🔥 NEW
+            day_doc_ref.set({
+                "latestBPM": int(value),
+                "lastUpdated": now
+            }, merge=True)
 
         if device == "gsr":
             # --- GSR EMOTION ---

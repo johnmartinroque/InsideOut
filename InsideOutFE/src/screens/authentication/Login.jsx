@@ -51,7 +51,7 @@ function Login() {
       };
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
-      navigate("/"); // redirect after login
+      navigate("/", { replace: true }); // redirect after login, replace true so it wont go back to login when user pressed back sa finish account setup
     } catch (err) {
       console.error(err);
       setError("Invalid email or password");

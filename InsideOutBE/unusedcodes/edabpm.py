@@ -1,3 +1,5 @@
+#code for receiving and predicting no upload to firegbase
+
 from flask import Flask, request, jsonify
 import joblib
 import numpy as np

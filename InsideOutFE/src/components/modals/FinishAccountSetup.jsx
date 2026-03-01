@@ -8,7 +8,7 @@ export default function FinishAccountSetup({ isOpen, onClose }) {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
+  
   if (!isOpen) return null;
 
   const handlePhoneChange = (e) => {
@@ -87,69 +87,90 @@ export default function FinishAccountSetup({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 pointer-events-auto">
-      <div className="relative w-full max-w-md p-4">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <div className="flex justify-between items-center border-b pb-3 mb-4">
-            <h3 className="text-lg font-semibold">
-              Finish Setting Up Your Account
-            </h3>
+    <div className="fixed inset-0 z-[9999] w-full h-full min-h-screen flex items-center justify-center bg-slate-900/60 backdrop-blur-md px-4 pointer-events-auto">
+      
+      {/* Modal Card */}
+      <div className="w-full max-w-md bg-white p-10 rounded-3xl shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-300">
+        
+        {/* Header Section (Same as Login/Register) */}
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">
+            Account{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+              Setup
+            </span>
+          </h2>
+          <p className="text-gray-500 mt-2">Please complete your details</p>
+        </div>
+
+        {/* error or success message (same as login) */}
+        {message && (
+          <div className={`p-3 rounded-xl mb-6 text-sm border text-center ${
+            message.includes("complete") 
+            ? "bg-green-50 text-green-600 border-green-100" 
+            : "bg-red-50 text-red-600 border-red-100"
+          }`}>
+            {message}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Companion Name */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1 ml-1">Companion Name</label>
+            <input
+              type="text"
+              required
+              placeholder="Juan Dela Cruz"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50/50 focus:bg-white"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Companion Name */}
-            <div>
-              <label className="block text-sm mb-1">Companion Name</label>
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Juan Dela Cruz"
-                required
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          {/* Phone Number */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1 ml-1">Phone Number</label>
+            <input
+              type="text"
+              required
+              placeholder="09XXXXXXXXX"
+              maxLength="11"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50/50 focus:bg-white"
+              value={phoneNumber}
+              onChange={handlePhoneChange}
+            />
+          </div>
 
-            {/* Phone Number */}
-            <div>
-              <label className="block text-sm mb-1">Phone Number</label>
-              <input
-                type="text"
-                value={phoneNumber}
-                onChange={handlePhoneChange}
-                placeholder="09XXXXXXXXX"
-                maxLength="11"
-                required
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          {/* Elderly ID */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1 ml-1">Elderly ID</label>
+            <input
+              type="text"
+              required
+              placeholder="Enter Pairing ID"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50/50 focus:bg-white font-mono text-xs"
+              value={elderlyID}
+              onChange={(e) => setElderlyID(e.target.value)}
+            />
+          </div>
 
-            {/* Elderly ID */}
-            <div>
-              <label className="block text-sm mb-1">Enter Elderly ID</label>
-              <input
-                type="text"
-                value={elderlyID}
-                onChange={(e) => setElderlyID(e.target.value)}
-                placeholder="Ex: N650pQK08tF0f5bZaTGo"
-                required
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {message && (
-              <p className="text-sm text-center text-blue-600">{message}</p>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-            >
-              {loading ? "Saving..." : "Connect"}
-            </button>
-          </form>
-        </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-50 mt-2"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Saving...
+              </span>
+            ) : "Finish Setup"}
+          </button>
+        </form>
       </div>
     </div>
   );

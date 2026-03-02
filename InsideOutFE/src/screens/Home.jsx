@@ -10,6 +10,8 @@ import CurrentBPMChart from "../components/esp32/CurrentBPMChart";
 import CurrentEDAChart from "../components/esp32/CurrentEDAChart";
 
 import DailyAverages from "../components/DailyAverages";
+import LatestBPM from "../components/esp32/LatestBPM";
+import LatestEDA from "../components/esp32/LatestEDA";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -70,6 +72,14 @@ function Home() {
             <CurrentEDA />
           </div>
         </div>
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <LatestBPM />
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <LatestEDA />
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
@@ -77,6 +87,15 @@ function Home() {
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
             <CurrentEDAChart />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <LatestBPM />
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <LatestEDA />
           </div>
         </div>
       </div>

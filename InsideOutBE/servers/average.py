@@ -19,23 +19,34 @@ def get_hb_average(user_id, day_id):
     )
 
     total = 0
-    count = 0
+    valid_count = 0
+    empty_count = 0
+    total_docs = 0
 
     for doc in times_ref.stream():
+        total_docs += 1
         data = doc.to_dict()
-
         hb = data.get("hb_interval_avg")
 
-        # ✅ Ignore None, missing, or invalid values
         if isinstance(hb, (int, float)):
             total += hb
-            count += 1
+            valid_count += 1
+        else:
+            empty_count += 1
 
-    if count == 0:
+    if valid_count == 0:
         print("No valid HB interval values found.")
         return None
 
-    average = round(total / count)
+    average = round(total / valid_count)
+
+    print("------ RESULTS ------")
+    print(f"Total interval documents: {total_docs}")
+    print(f"Valid hb_interval_avg: {valid_count}")
+    print(f"Empty / None hb_interval_avg: {empty_count}")
+    print(f"Overall HB average: {average}")
+    print("---------------------")
+
     return average
 
 
@@ -43,7 +54,4 @@ def get_hb_average(user_id, day_id):
 USER_ID = "flRsUK8a9mIQIxdUeEhG"
 DAY_ID = "2mar"
 
-result = get_hb_average(USER_ID, DAY_ID)
-
-if result:
-    print(f"Overall HB average for {DAY_ID}: {result}")
+get_hb_average(USER_ID, DAY_ID)

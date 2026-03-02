@@ -19,7 +19,6 @@ import LandingPage from "./screens/LandingPage";
 import "./App.css";
 import Footer from "./components/Footer";
 import AboutUs from "./screens/AboutUs";
-import Camera from "./screens/Camera";
 import Spinner from "./components/Spinner";
 
 import "./index.css";

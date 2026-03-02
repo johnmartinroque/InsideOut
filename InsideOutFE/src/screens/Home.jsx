@@ -72,11 +72,11 @@ function Home() {
             <CurrentEDA />
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-6">
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-start justify-center">
             <LatestBPM />
           </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-start justify-center">
             <LatestEDA />
           </div>
         </div>
@@ -87,15 +87,6 @@ function Home() {
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
             <CurrentEDAChart />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-6">
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-            <LatestBPM />
-          </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-            <LatestEDA />
           </div>
         </div>
       </div>

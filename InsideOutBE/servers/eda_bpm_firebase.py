@@ -215,6 +215,7 @@ def receive_data():
                 "mwl": {"label": mwl_label, "confidence": confidence_mwl}
             })
             
+            # 🔥 SAVE PREDICTIONS TO FIRESTORE
             day_doc_ref.set({
                 "gsrEmotion": emotion_label,
                 "gsrEmotionConfidence": confidence_emotion,
@@ -248,6 +249,8 @@ def receive_data():
                 "bpmEmotionConfidence": confidence,
                 "lastUpdated": now
             }, merge=True)
+            
+            
 
             bpm_values.append(value)
 

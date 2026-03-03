@@ -1,9 +1,12 @@
 from firebase_admin import firestore, _apps
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
 ELDERLY_ID = "alcHApCZqkI4l4XKUbRw"
+
+# Manila timezone
+MANILA_TZ = timezone(timedelta(hours=8))
 
 # Keep track of last alert time
 _last_alert_time = None
@@ -47,7 +50,8 @@ def check_and_alert(latest_prediction):
     bpm_emotion = bpm_data.get("label")
     bpm_conf = bpm_data.get("confidence") or 0
 
-    now = datetime.now()
+    # Use Manila time
+    now = datetime.now(MANILA_TZ)
 
     # ---------------- COOLDOWN ----------------
     if _last_alert_time and (now - _last_alert_time) < ALERT_COOLDOWN:
@@ -55,9 +59,9 @@ def check_and_alert(latest_prediction):
 
     # ---------------- STRICT CONDITION ----------------
     if (
-        gsr_emotion == "Stressed" and gsr_conf >= 70 and
-        mwl_label == "High MWL" and mwl_conf >= 70 and
-        bpm_emotion == "sad" and bpm_conf >= 70
+        gsr_emotion == "Stressed" and gsr_conf >= 50 and
+        mwl_label == "High MWL" and mwl_conf >= 50 and
+        bpm_emotion == "sad" and bpm_conf >= 50
     ):
 
         # 🚨 SAVE ALERT TO FIRESTORE
@@ -80,7 +84,7 @@ def check_and_alert(latest_prediction):
 
         print("🚨 ALERT SAVED TO FIRESTORE")
 
-        # Optional: still fetch companions (for SMS later)
+        # Optional: fetch companions (for SMS later)
         companions = fetch_companions_for_elderly(ELDERLY_ID)
 
         if companions:

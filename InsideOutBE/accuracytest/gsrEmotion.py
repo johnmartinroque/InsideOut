@@ -18,7 +18,7 @@ file_path = os.path.join("..", "datasets", "gsr", "mental_health_wearable_data.c
 df = pd.read_csv(file_path)
 
 # ---------------- FILTER ONLY CALM + STRESSED ----------------
-df = df[df["Emotional_State"].isin(["Calm", "Stressed"])]
+df = df[df["Emotional_State"].isin(["Calm", "Stressed", "Anxious"])]
 
 # Remove missing values
 df = df.dropna()

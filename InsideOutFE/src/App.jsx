@@ -20,7 +20,7 @@ import "./App.css";
 import Footer from "./components/Footer";
 import AboutUs from "./screens/AboutUs";
 import Spinner from "./components/Spinner";
-
+import Alerts from "./screens/Alerts";
 import "./index.css";
 import Reports from "./screens/Reports";
 import ReportDetailed from "./screens/ReportDetailed";
@@ -118,10 +118,10 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path="/alerts"
                 element={
                   <PrivateRoute>
-                    <Settings />
+                    <Alerts />
                   </PrivateRoute>
                 }
               />

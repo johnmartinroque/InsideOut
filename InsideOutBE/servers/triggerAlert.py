@@ -3,11 +3,12 @@ from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-ELDERLY_ID = "QV6m7zrKxSP4PnMjcVab"
+ELDERLY_ID = "alcHApCZqkI4l4XKUbRw"
 
 # Keep track of last alert time
 _last_alert_time = None
 ALERT_COOLDOWN = timedelta(minutes=1)  # 1 minute
+
 
 # ---------------- FETCH COMPANIONS ----------------
 def fetch_companions_for_elderly(elderly_id):
@@ -23,14 +24,19 @@ def fetch_companions_for_elderly(elderly_id):
         companions.append(data)
     return companions
 
-# ---------------- ALERT CHECK ----------------
+
 # ---------------- ALERT CHECK ----------------
 def check_and_alert(latest_prediction):
     global _last_alert_time
 
+    db = firestore.client()
+
     gsr_data = latest_prediction.get("gsr_emotion", {})
     mwl_data = latest_prediction.get("mwl", {})
     bpm_data = latest_prediction.get("bpm_emotion", {})
+
+    gsr_value = latest_prediction.get("gsr")
+    bpm_value = latest_prediction.get("bpm")
 
     gsr_emotion = gsr_data.get("label")
     gsr_conf = gsr_data.get("confidence") or 0
@@ -43,23 +49,42 @@ def check_and_alert(latest_prediction):
 
     now = datetime.now()
 
-    # Cooldown check
+    # ---------------- COOLDOWN ----------------
     if _last_alert_time and (now - _last_alert_time) < ALERT_COOLDOWN:
         return False
 
-    # 🚨 STRICT CONDITION WITH CONFIDENCE >= 70%
+    # ---------------- STRICT CONDITION ----------------
     if (
         gsr_emotion == "Stressed" and gsr_conf >= 70 and
         mwl_label == "High MWL" and mwl_conf >= 70 and
         bpm_emotion == "sad" and bpm_conf >= 70
     ):
+
+        # 🚨 SAVE ALERT TO FIRESTORE
+        alert_data = {
+            "timestamp": now,
+            "gsr_value": gsr_value,
+            "bpm_value": bpm_value,
+            "gsr_emotion": gsr_emotion,
+            "gsr_confidence": gsr_conf,
+            "mwl_label": mwl_label,
+            "mwl_confidence": mwl_conf,
+            "bpm_emotion": bpm_emotion,
+            "bpm_confidence": bpm_conf
+        }
+
+        db.collection("elderly") \
+          .document(ELDERLY_ID) \
+          .collection("alerts") \
+          .add(alert_data)
+
+        print("🚨 ALERT SAVED TO FIRESTORE")
+
+        # Optional: still fetch companions (for SMS later)
         companions = fetch_companions_for_elderly(ELDERLY_ID)
 
-        print("🚨 TRIGGER ALERT! Companion phone numbers:")
-
-        if not companions:
-            print("No companions found.")
-        else:
+        if companions:
+            print("🚨 Companion phone numbers:")
             for c in companions:
                 phone_number = c.get("phoneNumber")
                 if phone_number:

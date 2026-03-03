@@ -15,7 +15,7 @@ cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-USER_ID = "alcHApCZqkI4l4XKUbRw"
+USER_ID = "flRsUK8a9mIQIxdUeEhG"
 SAVE_INTERVAL = 120
 TZ = ZoneInfo("Asia/Manila")
 months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]

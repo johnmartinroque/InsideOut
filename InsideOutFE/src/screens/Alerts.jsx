@@ -85,7 +85,18 @@ export default function Alerts() {
             className="p-6 bg-white border-2 border-gray-100 rounded-2xl shadow-md hover:shadow-xl hover:border-gray-300 transition-all"
           >
             <p className="text-xl font-bold text-gray-800 mb-3">
-              {new Date(alert.timestamp.seconds * 1000).toLocaleString()}
+              {new Date(
+                alert.timestamp.seconds * 1000 +
+                  alert.timestamp.nanoseconds / 1000000,
+              ).toLocaleString("en-US", {
+                timeZone: "Asia/Manila",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

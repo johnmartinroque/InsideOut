@@ -15,7 +15,7 @@ cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-USER_ID = "flRsUK8a9mIQIxdUeEhG"
+USER_ID = "alcHApCZqkI4l4XKUbRw"
 SAVE_INTERVAL = 120
 TZ = ZoneInfo("Asia/Manila")
 months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
@@ -214,6 +214,14 @@ def receive_data():
                 "gsr_emotion": {"label": emotion_label, "confidence": confidence_emotion},
                 "mwl": {"label": mwl_label, "confidence": confidence_mwl}
             })
+            
+            day_doc_ref.set({
+                "gsrEmotion": emotion_label,
+                "gsrEmotionConfidence": confidence_emotion,
+                "mwlLabel": mwl_label,
+                "mwlConfidence": confidence_mwl,
+                "lastUpdated": now
+            }, merge=True)
 
             check_and_alert(latest_prediction)
 
@@ -233,6 +241,13 @@ def receive_data():
                 "bpm": int(value),
                 "bpm_emotion": {"label": bpm_label, "confidence": confidence}
             })
+            
+            # 🔥 SAVE BPM PREDICTION
+            day_doc_ref.set({
+                "bpmEmotion": bpm_label,
+                "bpmEmotionConfidence": confidence,
+                "lastUpdated": now
+            }, merge=True)
 
             bpm_values.append(value)
 

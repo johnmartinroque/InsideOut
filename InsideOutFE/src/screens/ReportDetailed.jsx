@@ -94,6 +94,42 @@ export default function ReportDetailed() {
       </p>
     );
 
+  const formatDate = (id) => {
+    const months = {
+      jan: 0,
+      feb: 1,
+      mar: 2,
+      apr: 3,
+      may: 4,
+      jun: 5,
+      jul: 6,
+      aug: 7,
+      sep: 8,
+      oct: 9,
+      nov: 10,
+      dec: 11,
+    };
+
+    const dayMatch = id.match(/\d+/);
+    const monthMatch = id.match(/[a-zA-Z]+/);
+
+    if (!dayMatch || !monthMatch) return id;
+
+    const day = parseInt(dayMatch[0]);
+    const monthStr = monthMatch[0].toLowerCase();
+    const month = months[monthStr];
+
+    if (month === undefined || isNaN(day)) return id;
+
+    const date = new Date(new Date().getFullYear(), month, day);
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
@@ -106,7 +142,7 @@ export default function ReportDetailed() {
       </button>
 
       <div className="border rounded-xl p-5 shadow bg-white">
-        <h1 className="text-2xl font-bold mb-3">Report — {id}</h1>
+        <h1 className="text-2xl font-bold mb-3">Report — {formatDate(id)}</h1>
 
         <div className="flex gap-8">
           <p className="flex flex-col">

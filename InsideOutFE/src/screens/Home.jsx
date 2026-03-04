@@ -2,13 +2,9 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import DateTime from "../components/DateTime";
-
 import FinishAccountSetup from "../components/modals/FinishAccountSetup";
-import CurrentBPM from "../components/esp32/CurrentBPM";
-import CurrentEDA from "../components/esp32/CurrentEDA";
 import CurrentBPMChart from "../components/esp32/CurrentBPMChart";
 import CurrentEDAChart from "../components/esp32/CurrentEDAChart";
-
 import DailyAverages from "../components/DailyAverages";
 import LatestBPM from "../components/esp32/LatestBPM";
 import LatestEDA from "../components/esp32/LatestEDA";

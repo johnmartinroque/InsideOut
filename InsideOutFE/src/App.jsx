@@ -22,7 +22,6 @@ import AboutUs from "./screens/AboutUs";
 import Spinner from "./components/Spinner";
 import Alerts from "./screens/Alerts";
 import "./index.css";
-import Reports from "./screens/Reports";
 import ReportDetailed from "./screens/ReportDetailed";
 import CameraFeed from "./screens/CameraFeed";
 import ReportsList from "./screens/ReportsList";

@@ -60,8 +60,8 @@ def check_and_alert(latest_prediction):
     # ---------------- STRICT CONDITION ----------------
     if (
         gsr_emotion == "Stressed" and gsr_conf >= 80 and
-        mwl_label == "High MWL" and mwl_conf >= 80 and
-        bpm_emotion == "sad" and bpm_conf >= 80
+        mwl_label == "High MWL" and mwl_conf >= 74 and
+        bpm_emotion == "sad" and bpm_conf >= 52
     ):
 
         # 🚨 SAVE ALERT TO FIRESTORE

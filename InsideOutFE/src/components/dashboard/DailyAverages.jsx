@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { auth, db } from "../../firebase";
 
 export default function DailyAverages() {
   const [avgHB, setAvgHB] = useState("-");

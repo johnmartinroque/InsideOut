@@ -10,7 +10,6 @@ import Home from "./screens/Home";
 import GuestHeader from "./components/GuestHeader";
 import SideBar from "./components/SideBar";
 import Profile from "./screens/Profile";
-import Settings from "./screens/Settings";
 import Register from "./screens/authentication/Register";
 import Login from "./screens/authentication/Login";
 import { auth } from "./firebase";

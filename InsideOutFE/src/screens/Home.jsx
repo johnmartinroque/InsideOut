@@ -3,11 +3,11 @@ import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import DateTime from "../components/DateTime";
 import FinishAccountSetup from "../components/modals/FinishAccountSetup";
-import CurrentBPMChart from "../components/esp32/CurrentBPMChart";
-import CurrentEDAChart from "../components/esp32/CurrentEDAChart";
-import DailyAverages from "../components/DailyAverages";
-import LatestBPM from "../components/esp32/LatestBPM";
-import LatestEDA from "../components/esp32/LatestEDA";
+import CurrentBPMChart from "../components/dashboard/CurrentBPMChart";
+import CurrentEDAChart from "../components/dashboard/CurrentEDAChart";
+import LatestBPM from "../components/dashboard/LatestBPM";
+import LatestEDA from "../components/dashboard/LatestEDA";
+import DailyAverages from "../components/dashboard/DailyAverages";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);

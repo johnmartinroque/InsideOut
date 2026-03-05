@@ -145,7 +145,7 @@ export default function ReadingsList() {
 
                 <div className="flex flex-col py-2 px-4 bg-gray-50 rounded-lg">
                   <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">
-                    Average GSR
+                    Average EDA
                   </span>
                   <span className="text-3xl font-mono font-bold text-gray-900">
                     {d.averageGSR ?? "--"}
